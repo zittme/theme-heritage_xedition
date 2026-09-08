@@ -1,0 +1,533 @@
+@version(2)
+@load('css/shop.css')
+
+<div class="shp">
+	<div class="shp-top"><h2 class="shp-title">{{ $lang->shop_checkout }}</h2></div>
+
+	@php $shp_pending = Context::get('pending_order'); @endphp
+	@if ($shp_pending)
+	<div class="shp-pending-box">
+		<p class="shp-pending-msg"><b>{{ $shp_pending->order_code }}</b> {{ !empty($shp_pending->pending_deadline) ? sprintf($lang->shop_pending_notice, zdate($shp_pending->pending_deadline, 'Y.m.d A g:i')) : $lang->shop_pending_notice_nodate }}</p>
+		@if (!empty($shp_pending->resume_pay_url))
+		<a class="shp-btn shp-btn-primary" href="{{ escape($shp_pending->resume_pay_url) }}">{{ $lang->shop_resume_pay }}</a>
+		@endif
+		<form action="{{ getUrl('') }}" method="post" style="display:inline" onsubmit="return confirm('{{ $lang->shop_pending_cancel_ask }}')">
+			<input type="hidden" name="module" value="commerce" />
+			<input type="hidden" name="mid" value="{{ $mid }}" />
+			<input type="hidden" name="act" value="procCommerceClaim" />
+			<input type="hidden" name="order_code" value="{{ $shp_pending->order_code }}" />
+			<button type="submit" class="shp-btn">{{ $lang->shop_cancel_order }}</button>
+		</form>
+	</div>
+	@endif
+
+	@if ($payment_price > 0 && !$pay_available)
+	<p class="shp-warn">{{ $lang->shop_pay_unavailable }}</p>
+	@else
+	<form action="{{ getUrl('') }}" method="post" class="shp-form">
+		<input type="hidden" name="act" value="procCommerceOrder" />
+		<input type="hidden" name="mid" value="{{ $mid }}" />
+
+		<div class="shp-2col">
+			<div class="shp-2col-main">
+				<div class="shp-box">
+					<h3>{{ $lang->shop_shipping }}</h3>
+					@if ($is_member && count($my_addresses ?? []))
+					<div class="shp-row" style="margin-bottom:12px">
+						<label>{{ $lang->shop_saved_address }}</label>
+						<select id="shpAddrSelect">
+							<option value="">{{ $lang->shop_saved_address_new }}</option>
+							@foreach ($my_addresses as $addr)
+							<option value="{{ $addr->address_srl }}"
+								data-name="{{ $addr->receiver_name }}" data-phone="{{ $addr->receiver_phone }}"
+								data-zipcode="{{ $addr->zipcode }}" data-address1="{{ $addr->address1 }}" data-address2="{{ $addr->address2 }}"
+								data-country="{{ $addr->country ?? 'KR' }}" data-state="{{ $addr->state ?? '' }}" data-city="{{ $addr->city ?? '' }}" data-phone-cc="{{ $addr->phone_cc ?? '' }}">
+								{{ $addr->title !== '' && $addr->title !== null ? $addr->title : $addr->address1 }} ({{ $addr->receiver_name }})
+							</option>
+							@endforeach
+						</select>
+					</div>
+					@endif
+					<div class="shp-form-grid">
+						@if ($shop_need_country)
+						<div class="shp-row">
+							<label>{{ $lang->shop_country }}</label>
+							<select name="country" id="shpCountry">
+								@foreach ($shop_countries as $zmc_cc => $zmc_cn)
+								<option value="{{ $zmc_cc }}" @if ($zmc_cc === $shop_default_country) selected @endif>{{ $zmc_cn }}</option>
+								@endforeach
+							</select>
+						</div>
+						@else
+						{{-- 고를 나라가 하나뿐이라 감췄다. 세금·배송비 계산은 이 값을 쓴다 --}}
+						<input type="hidden" name="country" id="shpCountry" value="{{ $shop_base_country }}" />
+						@endif
+						<div class="shp-row"><label>{{ $lang->shop_receiver }}</label><input type="text" name="receiver_name" placeholder="{{ $lang->shop_same_as_orderer }}" /></div>
+						<div class="shp-row">
+							<label>{{ $lang->shop_receiver_phone }}</label>
+							<div class="shp-phone-row">
+								@if ($shop_need_phone_cc)
+								<input type="text" class="shp-intl-only" name="phone_cc" placeholder="{{ $lang->shop_phone_cc }}" />
+								@endif
+								<input type="tel" name="receiver_phone" placeholder="{{ $lang->shop_same_as_orderer }}" />
+							</div>
+						</div>
+						<div class="shp-row shp-kr-only">
+							<label>{{ $lang->shop_zipcode }}</label>
+							<div class="shp-zip-row">
+								<input type="text" name="zipcode" readonly />
+								<button type="button" class="shp-btn shp-btn-ghost shp-btn-zip" id="shpZipSearch">{{ $lang->shop_search_address }}</button>
+							</div>
+						</div>
+						<div class="shp-row shp-intl-only"><label>{{ $lang->shop_postal_code }}</label><input type="text" name="zipcode_intl" /></div>
+						<div class="shp-row" style="grid-column:1/-1"><label>{{ $lang->shop_address }} *</label><input type="text" name="address1" required /></div>
+						<div class="shp-row" style="grid-column:1/-1"><label>{{ $lang->shop_address_detail }}</label><input type="text" name="address2" /></div>
+						<div class="shp-row shp-intl-only"><label>{{ $lang->shop_city }} *</label><input type="text" name="city" /></div>
+						<div class="shp-row shp-intl-only"><label>{{ $lang->shop_state }}@if ($shop_require_state) *@endif</label>
+							{{-- 행정구역 목록이 있는 나라는 검색해서 고른다. 손으로 적으면 배송비 규칙과 어긋난다 --}}
+							<div class="zmc-pick" id="shpStatePick">
+								<input type="text" id="shpStateInput" placeholder="{{ $lang->cfg_zone_region_ph }}" />
+								<input type="hidden" name="state" data-pick-value="1" />
+							</div>
+						</div>
+						<div class="shp-row" style="grid-column:1/-1"><label>{{ $lang->shop_delivery_memo }}</label><input type="text" name="delivery_memo" placeholder="{{ $lang->shop_delivery_memo_ph }}" /></div>
+					</div>
+					@if ($is_member)
+					<label class="shp-save-addr"><input type="checkbox" name="save_address" value="Y" /> {{ $lang->shop_save_address }}</label>
+					@endif
+				</div>
+
+				<div class="shp-box">
+					<h3>{{ $lang->shop_orderer }}</h3>
+					<div class="shp-form-grid">
+						<div class="shp-row"><label>{{ $lang->shop_name }} *</label><input type="text" name="orderer_name" required value="{{ $is_member ? ($logged_info->nick_name ?? '') : '' }}" /></div>
+						<div class="shp-row">
+							<label>{{ $lang->shop_phone }} *</label>
+							<input type="tel" name="orderer_phone" required value="{{ $is_member ? ($logged_info->phone_number ?? '') : '' }}" />
+							@if ($is_member)
+							<label class="shp-save-addr" style="margin-top:6px"><input type="checkbox" name="save_phone" value="Y" @if (empty($logged_info->phone_number)) checked @endif /> {{ $lang->shop_save_phone }}</label>
+							@endif
+						</div>
+						<div class="shp-row"><label>{{ $lang->shop_email }}</label><input type="email" name="orderer_email" value="{{ $is_member ? ($logged_info->email_address ?? '') : '' }}" /></div>
+						@if (!$is_member)
+						<div class="shp-row"><label>{{ $lang->shop_guest_password }} *</label><input type="password" name="guest_password" minlength="4" required autocomplete="new-password" /><small class="shp-hint">{{ $lang->shop_guest_password_help }}</small></div>
+						@endif
+					</div>
+				</div>
+
+				<div class="shp-box">
+					<h3>{{ $lang->shop_item }}</h3>
+					@foreach ($cart->items as $entry)
+					@if (!$entry->blocked)
+					@php $shp_row_thumb = !empty($entry->item->thumb) ? "background-image:url('" . $entry->item->thumb . "');" : ''; @endphp
+					<div class="shp-cart-item">
+						<span class="shp-cart-thumb" style="{{ $shp_row_thumb }}"></span>
+						<div class="shp-cart-info">
+							<span class="shp-cart-name">{{ $entry->item->item_name }}</span>
+							@if ($entry->option)<div class="shp-cart-option">{{ $entry->option->option_label }}</div>@endif
+							<div class="shp-cart-option">{{ $lang->shop_qty }} {{ sprintf($lang->shop_qty_count, $entry->qty) }}</div>
+						</div>
+						<div class="shp-cart-right"><strong class="shp-cart-price">{{ shop_money_in($entry->subtotal, $shp_currency) }}</strong></div>
+					</div>
+					@endif
+					@endforeach
+				</div>
+
+				@if ($is_member && $shp_currency === ($shp_base_currency ?? 'KRW') && ($shop_use_coupon || $shop_use_credit))
+				{{-- 쿠폰·적립금 — KRW 원장 전용이라 외화 주문서에서는 숨긴다 --}}
+				<div class="shp-box">
+					<h3>@if ($shop_use_coupon){{ $lang->shop_coupon }}@endif@if ($shop_use_coupon && $shop_use_credit) · @endif@if ($shop_use_credit){{ $lang->shop_credit }}@endif</h3>
+					<div class="shp-form-grid">
+						@if ($shop_use_coupon && !empty($my_coupons))
+						<div class="shp-row">
+							<label>{{ $lang->shop_coupon_select }}</label>
+							<select name="coupon_issue_srl" id="shpCouponSelect">
+								<option value="">{{ $lang->shop_coupon_none }}</option>
+								@foreach ($my_coupons as $mc)
+								<option value="{{ $mc->issue_srl }}" data-discount="{{ $mc->discount }}">{{ $mc->coupon->title }} (-{{ shop_money_base($mc->discount) }})</option>
+								@endforeach
+							</select>
+						</div>
+						@endif
+						@if ($shop_use_coupon)
+						<div class="shp-row">
+							<label>{{ $lang->shop_coupon_code }}</label>
+							<input type="text" name="coupon_code" id="shpCouponCode" autocomplete="off" placeholder="{{ $lang->shop_coupon_code_ph }}" />
+						</div>
+						@endif
+						@if ($shop_use_credit && $credit_balance > 0)
+						@php $shp_credit_min = max(0, (int)($shop_config->credit_min_use ?? 0)); @endphp
+						<div class="shp-row">
+							<label>{{ $lang->shop_credit_use }} ({{ $lang->shop_credit_balance }}: {{ shop_money_base($credit_balance) }})</label>
+							{{-- 사람이 읽는 단위로 받는다. 최소 단위 값을 그대로 두면 8 을 넣었을 때 0.08 이 된다 --}}
+							<input type="number" name="use_credit" id="shpUseCredit" min="0" step="1"
+								max="{{ \Zittme\Modules\Commerce\Models\Money::minorToInput((int)$credit_balance) }}"
+								value="0"
+								data-min-use="{{ \Zittme\Modules\Commerce\Models\Money::minorToInput((int)$shp_credit_min) }}"
+								data-scale="{{ \Zittme\Modules\Commerce\Models\Money::isZeroDecimal() ? 1 : 100 }}" />
+							<small class="shp-hint">@if ($shp_credit_min > 0){{ sprintf($lang->shop_credit_use_min, shop_money_base($shp_credit_min)) }} @endif{{ $lang->shop_credit_use_note }}</small>
+						</div>
+						@endif
+					</div>
+					@if ($shop_use_coupon)<small class="shp-hint shp-hint-wide">{{ $lang->shop_coupon_help }}</small>@endif
+				</div>
+				@endif
+			</div>
+
+			<aside class="shp-2col-aside">
+				{{-- 지역 배송비 구간은 등급 할인 전 금액으로 본다 (서버 Cart::extraShipFee 와 같은 기준) --}}
+				<div class="shp-box shp-paybox" data-item-total="{{ (int)$cart->item_total }}" data-ship-judge-total="{{ (int)($cart->item_total_listed ?? $cart->item_total) }}" data-ship-fee="{{ (int)$ship_fee }}" data-currency="{{ $shp_currency }}" data-base="{{ $shp_base_currency ?? 'KRW' }}" data-base-zero="{{ $shp_base_zero ? 1 : 0 }}" data-rate="{{ $shp_fx_rate }}" data-zero="{{ $shp_fx_zero_decimal ? 1 : 0 }}" data-symbol="{{ $shp_currency_symbol }}" data-won-suffix="{{ $shp_won_suffix ? 1 : 0 }}" data-extra-zones="{{ $shop_config->ship_extra_zones ?? '[]' }}">
+					<h3>{{ $lang->shop_pay_summary }}</h3>
+					<div class="shp-summary-row"><span>{{ $lang->shop_item_total }}</span><span>{{ shop_money_in($cart->item_total, $shp_currency) }}</span></div>
+					<div class="shp-summary-row" id="shpSumDiscount" hidden><span>{{ $lang->shop_discount }}</span><span class="shp-minus">-<em>0</em></span></div>
+					<div class="shp-summary-row"><span>{{ $lang->shop_ship_fee }}</span><span id="shpSumShip">{{ $ship_fee > 0 ? '+' . shop_money_in($ship_fee, $shp_currency) : $lang->shop_ship_free }}</span></div>
+					<div class="shp-summary-row" id="shpSumShipExtra" hidden><span>{{ $lang->shop_ship_extra }}</span><span>+<em>0</em></span></div>
+					<div class="shp-summary-row is-total"><span>{{ $lang->shop_total }}</span><span id="shpSumTotal">{{ shop_money_in($payment_price, $shp_currency) }}</span></div>
+
+					<label class="shp-check" style="margin-top:14px">
+						<input type="checkbox" name="agree_privacy" value="Y" required />
+						{{ $lang->shop_agree_privacy }}
+					</label>
+					@if (!empty($shop_config->privacy_text))
+					<div class="shp-privacy">{{ $shop_config->privacy_text }}</div>
+					@endif
+
+					<button type="submit" class="shp-btn shp-btn-primary" id="shpPayBtn" style="width:100%;margin-top:12px">
+						{{ $payment_price > 0 ? sprintf($lang->shop_pay_amount, shop_money_in($payment_price, $shp_currency)) : $lang->shop_order_free }}
+					</button>
+				</div>
+			</aside>
+		</div>
+	</form>
+	@endif
+
+	<p class="shp-foot-links">
+		<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceCart') }}">{{ $lang->shop_cart }}</a>
+	</p>
+
+	<script>
+	(function () {
+		var addrSel = document.getElementById('shpAddrSelect');
+		function setVal(name, value) {
+			var el = document.querySelector('input[name="' + name + '"]');
+			if (el) el.value = value || '';
+		}
+		if (addrSel) {
+			addrSel.addEventListener('change', function () {
+				var opt = addrSel.options[addrSel.selectedIndex];
+				if (!opt || !opt.value) return;
+				setVal('receiver_name', opt.getAttribute('data-name'));
+				setVal('receiver_phone', opt.getAttribute('data-phone'));
+				var optCountry = opt.getAttribute('data-country') || 'KR';
+				var countrySel = document.getElementById('shpCountry');
+				if (countrySel) {
+					countrySel.value = optCountry;
+					countrySel.dispatchEvent(new Event('change'));
+				}
+				// 시·도는 검색 상자를 거쳐야 이름이 코드로 바뀐다
+				var stateInput = document.getElementById('shpStateInput');
+				if (stateInput && stateInput.zmcPick) { stateInput.zmcPick.setValue(opt.getAttribute('data-state') || ''); }
+				else { setVal('state', opt.getAttribute('data-state')); }
+				setVal('city', opt.getAttribute('data-city'));
+				setVal('phone_cc', opt.getAttribute('data-phone-cc'));
+				setVal('zipcode', opt.getAttribute('data-zipcode'));
+				setVal('zipcode_intl', opt.getAttribute('data-zipcode'));
+				setVal('address1', opt.getAttribute('data-address1'));
+				setVal('address2', opt.getAttribute('data-address2'));
+				// 채워 넣은 값으로 배송비를 다시 계산하게 한다
+				var a1 = document.querySelector('[name="address1"]');
+				if (a1) a1.dispatchEvent(new Event('change', { bubbles: true }));
+			});
+		}
+
+		var paybox = document.querySelector('.shp-paybox');
+		var couponSel = document.getElementById('shpCouponSelect');
+		var creditInput = document.getElementById('shpUseCredit');
+		function fmt(n) { return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+		// 통화 인지 금액 표기 — 외화 주문서는 금액이 통화 최소단위 정수다
+		var shpCur = paybox ? (paybox.getAttribute('data-currency') || 'KRW') : 'KRW';
+		var shpBase = paybox ? (paybox.getAttribute('data-base') || 'KRW') : 'KRW';
+		var shpZero = paybox ? paybox.getAttribute('data-zero') === '1' : true;
+		var shpRate = paybox ? (parseFloat(paybox.getAttribute('data-rate')) || 1) : 1;
+		// 기호는 서버가 정한 것을 그대로 받는다. 표를 두 벌 두면 화면끼리 표기가 갈린다
+		var shpSym = paybox ? (paybox.getAttribute('data-symbol') || '') : '';
+		var shpWonSuffix = paybox ? paybox.getAttribute('data-won-suffix') === '1' : true;
+		function money(minor) {
+			if (shpCur === 'KRW') return fmt(minor) + '\uC6D0';
+			return shpSym + (shpZero ? fmt(minor) : fmt(Math.floor(minor / 100)) + '.' + ('0' + (minor % 100)).slice(-2));
+		}
+		// 지역 추가 배송비는 기준 통화 최소단위로 정의돼 있어 병행 통화 주문서에서만 교차 환율로 되돌린다
+		var shpBaseZero = paybox ? paybox.getAttribute('data-base-zero') === '1' : true;
+		function toOrderMinor(fee) {
+			if (shpCur === shpBase) return fee;
+			return Math.round((fee / (shpBaseZero ? 1 : 100)) / shpRate * (shpZero ? 1 : 100));
+		}
+		var shipFreeLabel = {!! json_encode($lang->shop_ship_free) !!};
+		var extraZones = [];
+		try { extraZones = JSON.parse(paybox ? paybox.getAttribute('data-extra-zones') : '[]') || []; } catch (e) {}
+		// 서버(Cart::extraShipFee)와 같은 순서로 본다: 국가 → 시·도(해외는 주/도·도시) → 우편번호
+		var regionAliases = { '충청북도': '충북', '충청남도': '충남', '전라북도': '전북', '전라남도': '전남', '경상북도': '경북', '경상남도': '경남', '강원도': '강원', '제주도': '제주' };
+		var regionNames = ['서울', '경기', '인천', '부산', '대구', '광주', '대전', '울산', '세종', '강원', '충북', '충남', '전북', '전남', '경북', '경남', '제주'];
+		function normRegion(name) {
+			name = String(name || '').trim();
+			if (!name) return '';
+			if (regionAliases[name]) return regionAliases[name];
+			for (var i = 0; i < regionNames.length; i++) {
+				if (name.indexOf(regionNames[i]) === 0) return regionNames[i];
+			}
+			for (var k in regionAliases) {
+				if (name.indexOf(k) === 0) return regionAliases[k];
+			}
+			return name;
+		}
+		function zipExtra() {
+			var itemTotalForZone = parseInt(paybox ? (paybox.getAttribute('data-ship-judge-total') || paybox.getAttribute('data-item-total')) : 0, 10) || 0;
+			var stateEl = document.querySelector('input[name="state"]');
+			var buyerRegion = stateEl ? stateEl.value.trim() : '';
+			var zipEl = document.querySelector('input[name="zipcode"]');
+			var zip = zipEl ? zipEl.value.replace(/[^0-9]/g, '') : '';
+			var addrEl = document.querySelector('input[name="address1"]');
+			var region = addrEl ? normRegion(addrEl.value.trim().split(' ')[0]) : '';
+			var countryEl = document.querySelector('[name="country"]');
+			var country = (countryEl ? countryEl.value : 'KR').toUpperCase() || 'KR';
+
+			for (var i = 0; i < extraZones.length; i++) {
+				var fee = parseInt(extraZones[i].fee, 10) || 0;
+				var tiers = extraZones[i].tiers || [];
+				if (fee <= 0 && !tiers.length) continue;
+
+				// 구간: 기준액을 넘긴 것 중 가장 높은 구간의 추가금을 쓴다
+				var matchedFrom = -1;
+				for (var t = 0; t < tiers.length; t++) {
+					var tierFrom = parseInt(tiers[t].from, 10) || 0;
+					if (itemTotalForZone >= tierFrom && tierFrom > matchedFrom) {
+						matchedFrom = tierFrom;
+						fee = Math.max(0, parseInt(tiers[t].fee, 10) || 0);
+					}
+				}
+
+				var zoneCountry = String(extraZones[i].country || '').toUpperCase() || 'KR';
+				if (zoneCountry !== country) continue;
+
+				// 행정구역 코드로 맞춘다 (구매자도 같은 목록에서 고른다)
+				var zoneRegion = String(extraZones[i].region || '').trim();
+				if (zoneRegion && buyerRegion && zoneRegion.toUpperCase() === buyerRegion.toUpperCase()) return fee;
+
+				// 해외는 지역을 지정하지 않았으면 나라 단위로 적용한다
+				if (country !== 'KR') {
+					if (!zoneRegion) return fee;
+					continue;
+				}
+
+				var regions = String((extraZones[i].region || '') + ',' + (extraZones[i].regions || '')).split(',');
+				for (var r = 0; r < regions.length; r++) {
+					var zoneName = regions[r].trim();
+					if (!zoneName) continue;
+					if (region && normRegion(zoneName) === region) return fee;
+				}
+				if (!zip) continue;
+
+				var patterns = String(extraZones[i].zips || '').split(',');
+				for (var j = 0; j < patterns.length; j++) {
+					var p = patterns[j].trim();
+					if (!p) continue;
+					if (p.indexOf('-') >= 0) {
+						var range = p.split('-');
+						var from = range[0].trim(), to = range[1] ? range[1].trim() : '';
+						var zipNum = parseInt(zip.substring(0, Math.max(from.length, 1)), 10);
+						if (from && to && zipNum >= parseInt(from, 10) && zipNum <= parseInt(to, 10)) return fee;
+					} else if (zip.indexOf(p) === 0) {
+						return fee;
+					}
+				}
+			}
+			return 0;
+		}
+		function recalc() {
+			if (!paybox) return;
+			var itemTotal = parseInt(paybox.getAttribute('data-item-total'), 10) || 0;
+			var shipBase = parseInt(paybox.getAttribute('data-ship-fee'), 10) || 0;
+			var shipExtra = toOrderMinor(zipExtra());
+			var shipFee = shipBase + shipExtra;
+						var shipEl = document.getElementById('shpSumShip');
+			if (shipEl) shipEl.textContent = shipBase > 0 ? '+' + money(shipBase) : shipFreeLabel;
+			var extraRow = document.getElementById('shpSumShipExtra');
+			if (extraRow) {
+				extraRow.hidden = shipExtra <= 0;
+				extraRow.querySelector('em').textContent = money(shipExtra);
+			}
+			var discount = 0;
+			if (couponSel && couponSel.selectedIndex >= 0) {
+				discount += parseInt(couponSel.options[couponSel.selectedIndex].getAttribute('data-discount') || '0', 10) || 0;
+			}
+			if (creditInput) {
+				// 화면은 사람이 읽는 단위, 계산은 최소 단위로 한다
+				var creditScale = parseInt(creditInput.getAttribute('data-scale') || '1', 10) || 1;
+				var creditMin = Math.round((parseFloat(creditInput.getAttribute('data-min-use')) || 0) * creditScale);
+				var creditMax = Math.round((parseFloat(creditInput.getAttribute('max')) || 0) * creditScale);
+				var wantCredit = Math.max(0, Math.round((parseFloat(creditInput.value) || 0) * creditScale));
+				if (creditMax > 0 && wantCredit > creditMax) wantCredit = creditMax;
+				if (wantCredit < creditMin) wantCredit = 0;
+				discount += wantCredit;
+			}
+			if (discount > itemTotal) discount = itemTotal;
+			var row = document.getElementById('shpSumDiscount');
+			if (row) {
+				row.hidden = discount <= 0;
+				row.querySelector('em').textContent = money(discount);
+			}
+			var total = itemTotal - discount + shipFee;
+			var totalEl = document.getElementById('shpSumTotal');
+			if (totalEl) totalEl.textContent = money(total);
+			var btn = document.getElementById('shpPayBtn');
+			if (btn) btn.textContent = total > 0 ? shpPayLabel.replace('%s', money(total)) : btn.textContent;
+		}
+		// 버튼 문구는 언어 파일에서 받는다. JS 가 한국어를 박으면 다른 언어에서 덮어써진다
+		var shpPayLabel = {!! json_encode($lang->shop_pay_amount) !!};
+		// 배송 국가에 맞춰 행정구역 목록을 갈아 끼운다
+		var shpRegionData = {!! $shp_region_json !!};
+		var shpStateInput = document.getElementById('shpStateInput');
+		if (shpStateInput && window.zmcPickBox) {
+			var shpStatePick = zmcPickBox(shpStateInput, {
+				items: [],
+				// 목록에서 고르면 input 이벤트가 나지 않는다. 여기서 직접 다시 계산한다
+				onPick: function () { recalc(); },
+				empty: {!! json_encode($lang->cfg_zone_search_empty) !!}
+			});
+			var shpCountrySel = document.querySelector('[name="country"]');
+			var shpStateWrap = document.getElementById('shpStatePick');
+			function shpSyncRegions(keep) {
+				var cc = (shpCountrySel ? shpCountrySel.value : 'KR').toUpperCase();
+				var list = shpRegionData[cc] || [];
+				shpStatePick.setItems(list);
+				// 목록이 없는 나라는 자유 입력으로 둔다 (배송비 판정에는 쓰지 않는다)
+				shpStateInput.readOnly = false;
+				if (!list.length) {
+					shpStateInput.placeholder = '';
+					shpStateInput.dataset.picked = '1';
+				} else {
+					shpStateInput.placeholder = {!! json_encode($lang->cfg_zone_region_ph) !!};
+				}
+				if (keep) { shpStatePick.setValue(keep); }
+			}
+			if (shpCountrySel) { shpCountrySel.addEventListener('change', function () { shpSyncRegions(''); recalc(); }); }
+			shpSyncRegions({!! json_encode($shp_state_value ?? '') !!});
+			shpStateInput.addEventListener('input', recalc);
+		}
+
+		if (couponSel) couponSel.addEventListener('change', recalc);
+		if (creditInput) { creditInput.addEventListener('input', recalc); creditInput.addEventListener('change', recalc); }
+		['address1', 'zipcode', 'country', 'state', 'city'].forEach(function (name) {
+			var el = document.querySelector('[name="' + name + '"]');
+			if (!el) return;
+			el.addEventListener('input', recalc);
+			el.addEventListener('change', recalc);
+		});
+
+		var checkoutForm = document.querySelector('form.shp-form');
+		if (checkoutForm) {
+			checkoutForm.addEventListener('submit', function (e) {
+				function val(name) {
+					var el = checkoutForm.querySelector('[name="' + name + '"]');
+					return el ? { el: el, v: (el.value || '').trim() } : null;
+				}
+				function fail(field, msg) {
+					e.preventDefault();
+					if (field && field.el) {
+						field.el.style.borderColor = '#e5484d';
+						field.el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+						setTimeout(function () { try { field.el.focus(); } catch (err) {} }, 350);
+						field.el.addEventListener('input', function once() {
+							field.el.style.borderColor = '';
+							field.el.removeEventListener('input', once);
+						});
+					}
+					alert(msg);
+					return false;
+				}
+				var f;
+				f = val('orderer_name');
+				if (f && f.v === '') return fail(f, {!! json_encode($lang->shop_v_name) !!});
+				f = val('orderer_phone');
+				if (f && f.v === '') return fail(f, {!! json_encode($lang->shop_v_phone) !!});
+				f = val('zipcode');
+				var addr1 = val('address1');
+				if (f && f.v === '' && addr1 && addr1.v === '') return fail(f, {!! json_encode($lang->shop_v_zip) !!});
+				if (addr1 && addr1.v === '') return fail(addr1, {!! json_encode($lang->shop_v_address) !!});
+				@if ($shop_require_state)
+				var stateRow = checkoutForm.querySelector('.shp-row.shp-intl-only #shpStateInput');
+				f = val('state');
+				// 주·도 칸이 화면에 있을 때만 본다. 국내 입력에서는 감춰져 있다
+				if (f && f.v === '' && stateRow && stateRow.offsetParent !== null) {
+					return fail({ el: stateRow }, {!! json_encode($lang->msg_shop_state_required) !!});
+				}
+				@endif
+				f = val('guest_password');
+				if (f && f.v.length < 4) return fail(f, {!! json_encode($lang->shop_v_guest_pw) !!});
+				var agree = checkoutForm.querySelector('[name="agree_privacy"]');
+				if (agree && !agree.checked) {
+					e.preventDefault();
+					agree.scrollIntoView({ behavior: 'smooth', block: 'center' });
+					alert({!! json_encode($lang->shop_v_agree) !!});
+					return false;
+				}
+			});
+		}
+
+		var zipBtn = document.getElementById('shpZipSearch');
+		if (!zipBtn) return;
+		function openPostcode() {
+			new daum.Postcode({
+				oncomplete: function (data) {
+					setVal('zipcode', data.zonecode);
+					setVal('address1', data.roadAddress || data.jibunAddress);
+					var detail = document.querySelector('input[name="address2"]');
+					if (detail) detail.focus();
+				}
+			}).open();
+		}
+		zipBtn.addEventListener('click', function () {
+			if (window.daum && window.daum.Postcode) {
+				openPostcode();
+				return;
+			}
+			var script = document.createElement('script');
+			script.src = 'https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
+			script.onload = openPostcode;
+			document.head.appendChild(script);
+		});
+	})();
+	</script>
+</div>
+
+<script>
+(function () {
+	var mode = {!! json_encode($shop_address_mode) !!};
+	var form = document.querySelector('form[action*="procCommerce"], form');
+	if (!form) return;
+	var country = document.getElementById('shpCountry');
+
+	function isOverseas() {
+		if (mode === 'intl') return true;
+		if (mode === 'kr') return false;
+		return country ? country.value.toUpperCase() !== 'KR' : false;
+	}
+
+	function apply() {
+		var overseas = isOverseas();
+		document.querySelectorAll('.shp-kr-only').forEach(function (el) { el.hidden = overseas; });
+		document.querySelectorAll('.shp-intl-only').forEach(function (el) { el.hidden = !overseas; });
+		var city = document.querySelector('[name="city"]');
+		if (city) city.required = overseas;
+		var zip = document.querySelector('[name="zipcode"], [name="zipcode_kr"]');
+		var zipIntl = document.querySelector('[name="zipcode_intl"]');
+		if (zip && zipIntl) {
+			if (overseas) { zipIntl.name = 'zipcode'; zip.name = 'zipcode_kr'; }
+			else { zip.name = 'zipcode'; zipIntl.name = 'zipcode_intl'; }
+		}
+	}
+
+	if (country) country.addEventListener('change', apply);
+	apply();
+})();
+</script>

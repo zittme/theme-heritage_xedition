@@ -1,0 +1,225 @@
+@version(2)
+@load('css/shop.css')
+
+<div class="shp shp-narrow">
+	<div class="shp-top"><h2 class="shp-title">{{ $lang->shop_order_detail }}</h2></div>
+
+	@if ($order->status === 'pending')
+	@php $shp_deadline = Context::get('pending_deadline'); $shp_resume = Context::get('resume_pay_url'); @endphp
+	<div class="shp-pending-box">
+		<p class="shp-pending-msg">{{ $shp_deadline ? sprintf($lang->shop_pending_notice, zdate($shp_deadline, 'Y.m.d A g:i')) : $lang->shop_pending_notice_nodate }}</p>
+		@if ($shp_resume)
+		<a class="shp-btn shp-btn-primary" href="{{ escape($shp_resume) }}">{{ $lang->shop_resume_pay }}</a>
+		@else
+		<p class="shp-pending-msg">{{ $lang->shop_pending_expired }}</p>
+		@endif
+	</div>
+	@endif
+
+	@php $shp_unrv = Context::get('unreviewed_items') ?: []; @endphp
+	@if (count($shp_unrv))
+	<div class="shp-review-invite {{ Context::get('review') ? 'is-hot' : '' }}">
+		<div class="shp-review-invite-msg">
+			<strong>{{ Context::get('review') ? $lang->shop_review_prompt_confirmed : $lang->shop_review_prompt_pending }}</strong>
+			<span>{{ $lang->shop_review_prompt_note }}</span>
+		</div>
+		<div class="shp-review-invite-items">
+			@foreach ($shp_unrv as $shp_unrv_srl => $shp_unrv_name)
+			<button type="button" class="shp-btn shp-btn-primary shp-btn-sm" onclick="var f=document.getElementById('shpRvForm{{ $shp_unrv_srl }}'); f.style.display=f.style.display==='none'?'grid':'none';">{{ sprintf($lang->shop_write_review_for, $shp_unrv_name) }}</button>
+			@endforeach
+		</div>
+		{{-- 상품 상세로 보내지 않고 이 자리에서 바로 등록한다 --}}
+		@foreach ($shp_unrv as $shp_unrv_srl => $shp_unrv_name)
+		<form action="{{ getUrl('') }}" method="post" id="shpRvForm{{ $shp_unrv_srl }}" style="display:none;margin-top:12px;gap:8px">
+			<input type="hidden" name="act" value="procCommerceReviewInsert" />
+			<input type="hidden" name="mid" value="{{ $mid }}" />
+			<input type="hidden" name="item_srl" value="{{ $shp_unrv_srl }}" />
+			<input type="hidden" name="order_srl" value="{{ $order->order_srl }}" />
+			<input type="hidden" name="success_return_url" value="{{ getNotEncodedUrl('', 'mid', $mid, 'act', 'dispCommerceOrderResult', 'code', $order->order_code) }}" />
+			<div style="display:flex;gap:10px;align-items:center">
+				<strong style="font-size:13.5px">{{ $shp_unrv_name }}</strong>
+				<span class="shp-starpick">@foreach ([5, 4, 3, 2, 1] as $shp_star_v)<input type="radio" id="shpStar{{ $shp_unrv_srl }}_{{ $shp_star_v }}" name="rating" value="{{ $shp_star_v }}" @if ($shp_star_v === 5) checked @endif /><label for="shpStar{{ $shp_unrv_srl }}_{{ $shp_star_v }}" aria-label="{{ $shp_star_v }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 5.9 6.5 1-4.7 4.6 1.1 6.5-5.8-3.1-5.8 3.1 1.1-6.5L2.6 9.4l6.5-1z"/></svg></label>@endforeach</span>
+			</div>
+			<textarea name="content" rows="3" required placeholder="{{ $lang->shop_write_review }}" style="width:100%"></textarea>
+			<input type="hidden" name="images" class="shpRvImages" value="" />
+			<div class="shp-rv-file"><input type="file" class="shpRvFile" data-item="{{ $shp_unrv_srl }}" accept="image/*,video/mp4,video/quicktime,video/webm" multiple /> {{ $lang->shop_review_media_label }}</div>
+			<div class="shp-review-media shpRvPreview"></div>
+			<div><button type="submit" class="shp-btn shp-btn-primary shp-btn-sm">{{ $lang->shop_write_review }}</button></div>
+		</form>
+		@endforeach
+		<script>
+		(function () {
+			document.querySelectorAll('.shpRvFile').forEach(function (fileEl) {
+				var form = fileEl.closest('form');
+				var jsonEl = form.querySelector('.shpRvImages');
+				var preview = form.querySelector('.shpRvPreview');
+				var urls = [];
+				function render() {
+					jsonEl.value = JSON.stringify(urls);
+					preview.innerHTML = '';
+					urls.forEach(function (u, i) {
+						var w = document.createElement('span');
+						w.className = 'shp-review-thumb';
+						w.innerHTML = (/\.(mp4|mov|webm)$/i.test(u) ? '<video src="' + u + '" preload="metadata"></video>' : '<img src="' + u + '" alt="" />') + '<button type="button" aria-label="{{ $lang->shop_delete }}">&times;</button>';
+						w.querySelector('button').addEventListener('click', function () { urls.splice(i, 1); render(); });
+						preview.appendChild(w);
+					});
+				}
+				fileEl.addEventListener('change', function () {
+					[].slice.call(fileEl.files).forEach(function (f) {
+						if (urls.length >= 5) return;
+						var fd = new FormData();
+						fd.append('file', f);
+						fd.append('item_srl', fileEl.getAttribute('data-item'));
+						fetch('./?module=commerce&act=procCommerceReviewUpload', { method: 'POST', body: fd })
+							.then(function (r) { return r.json(); })
+							.then(function (res) {
+								if (res && !res.error && res.url) { urls.push(res.url); render(); }
+								else alert(res && res.message ? res.message : {!! json_encode($lang->msg_shop_upload_failed) !!});
+							})
+							.catch(function () { alert({!! json_encode($lang->msg_shop_upload_failed) !!}); });
+					});
+					fileEl.value = '';
+				});
+			});
+		})();
+		</script>
+	</div>
+	@endif
+
+	@php
+	$shp_ds_pre = Context::get('display_status') ?: $order->status;
+	$shp_step_keys = ['paid', 'preparing', 'shipping', 'delivered', 'confirmed'];
+	$shp_step_idx = array_search($shp_ds_pre, $shp_step_keys);
+	@endphp
+	@if ($shp_step_idx !== false)
+	<div class="shp-steps">
+		@foreach ([$lang->shop_status_paid, $lang->shop_status_preparing, $lang->shop_status_shipping, $lang->shop_status_delivered, $lang->shop_status_confirmed] as $shp_si => $shp_sl)
+		<div class="shp-step {{ $shp_si < $shp_step_idx ? 'is-done' : '' }} {{ $shp_si === $shp_step_idx ? 'is-now' : '' }}">
+			<span class="shp-step-dot">
+				@if ($shp_si < $shp_step_idx)
+				<svg width="11" height="11" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12.5l5 5L19 7.5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+				@endif
+			</span>
+			<span class="shp-step-label">{{ $shp_sl }}</span>
+		</div>
+		@endforeach
+	</div>
+	@endif
+
+	<dl class="shp-detail-list">
+		<dt>{{ $lang->shop_order_code }}</dt>
+		<dd><strong>{{ $order->order_code }}</strong></dd>
+		<dt>{{ $lang->shop_status }}</dt>
+		@php $shp_ds = Context::get('display_status') ?: $order->status; @endphp
+		<dd><span class="shp-st shp-st-{{ $shp_ds }}">{{ $lang->{'shop_status_' . $shp_ds} ?? $shp_ds }}</span></dd>
+		<dt>{{ $lang->shop_orderer }}</dt>
+		<dd>{{ $order->orderer_name }}</dd>
+		<dt>{{ $lang->shop_item_total }}</dt>
+		<dd>{{ shop_money_in($order->item_total, $order->currency ?? 'KRW') }}</dd>
+		@if ($order->discount_total > 0)
+		<dt>{{ $lang->shop_discount }}</dt>
+		<dd>-{{ shop_money_in($order->discount_total, $order->currency ?? 'KRW') }}</dd>
+		@endif
+		@if (!empty($order->credit_used) && $order->credit_used > 0)
+		<dt>{{ $lang->shop_credit }}</dt>
+		<dd>-{{ shop_money_in($order->credit_used, $order->currency ?? 'KRW') }}</dd>
+		@endif
+		<dt>{{ $lang->shop_ship_fee }}</dt>
+		<dd>{{ $order->delivery_fee_total > 0 ? shop_money_in($order->delivery_fee_total, $order->currency ?? 'KRW') : $lang->shop_ship_free }}</dd>
+		<dt>{{ $lang->shop_total }}</dt>
+		<dd><strong>{{ shop_money_in($order->payment_price, $order->currency ?? 'KRW') }}</strong></dd>
+	</dl>
+
+	<table class="shp-table">
+		<thead><tr><th>{{ $lang->shop_item }}</th><th>{{ $lang->shop_qty }}</th><th>{{ $lang->shop_subtotal }}</th></tr></thead>
+		<tbody>
+			@foreach ($order_items as $oi)
+			<tr>
+				<td>{{ $oi->item_name }}@if (!empty($oi->option_name))<br /><small class="shp-sub-text">{{ $oi->option_name }}</small>@endif</td>
+				<td>{{ $oi->qty }}</td>
+				<td>{{ shop_money_in($oi->subtotal, $order->currency ?? 'KRW') }}</td>
+			</tr>
+			@endforeach
+		</tbody>
+	</table>
+
+	@foreach ($order_sellers as $os)
+	@if (!empty($os->shipping_invoice))
+	@php
+	$shp_tk = Context::get('tracking_info');
+	$shp_tk_details = ($shp_tk && is_array($shp_tk->details ?? null)) ? array_reverse($shp_tk->details) : [];
+	@endphp
+	<div class="shp-track">
+		@if ($shp_tk)
+		<div class="shp-track-head">
+			<strong class="{{ $shp_tk->complete === 'Y' ? 'is-done' : '' }}">{{ $shp_tk->complete === 'Y' ? $lang->shop_delivered_note : $shp_tk->status_name }}</strong>
+			@if (count($shp_tk_details))<span>{{ $shp_tk_details[0]['time'] ?? '' }}</span>@endif
+		</div>
+		@endif
+		<div class="shp-summary-row"><span>{{ $lang->shop_shipping_info }}</span><span>{{ $os->shipping_company }} <strong>{{ $os->shipping_invoice }}</strong></span></div>
+		@if (count($shp_tk_details))
+		<ol class="shp-track-list">
+			@foreach ($shp_tk_details as $shp_ti => $shp_td)
+			<li class="{{ $shp_ti === 0 ? 'is-now' : '' }}">
+				<span class="shp-track-dot"></span>
+				<span class="shp-track-body">
+					<strong>{{ $shp_td['where'] ?: '-' }}</strong> <em>{{ $shp_td['kind'] }}</em>
+					<small>{{ $shp_td['time'] }}</small>
+				</span>
+			</li>
+			@endforeach
+		</ol>
+		@if (count($shp_tk_details) > 4)
+		<button type="button" class="shp-btn shp-btn-ghost" style="width:100%;margin-top:10px;padding:9px 0;font-size:13.5px" onclick="this.closest('.shp-track').classList.toggle('is-open');this.textContent=this.closest('.shp-track').classList.contains('is-open')?{!! json_encode($lang->shop_track_fold) !!}:{!! json_encode($lang->shop_track_all) !!};">{{ $lang->shop_track_all }}</button>
+		@endif
+		@endif
+	</div>
+	@endif
+	@endforeach
+
+	@php
+	$shp_can_confirm = false;
+	foreach ($order_sellers as $shp_os_c) { if (($shp_os_c->status ?? '') === 'delivered') { $shp_can_confirm = true; } }
+	@endphp
+	@if ($order->status === 'paid' && $shp_can_confirm)
+	<form action="{{ getUrl('') }}" method="post" style="margin-top:8px" onsubmit="return confirm('{{ $lang->shop_confirm_ask }}')">
+		<input type="hidden" name="act" value="procCommerceConfirmPurchase" />
+		<input type="hidden" name="mid" value="{{ $mid }}" />
+		<input type="hidden" name="order_code" value="{{ $order->order_code }}" />
+		@if ($order->member_srl == 0)
+		<input type="hidden" name="guest_password" value="{{ escape(Context::get('gp')) }}" />
+		@endif
+		<button type="submit" class="shp-btn shp-btn-primary" style="width:100%">{{ $lang->shop_confirm_purchase }}</button>
+	</form>
+	@endif
+
+	@php
+	$shp_claim_type = '';
+	$shp_claim_label = '';
+	if ($order->status === 'pending' || $shp_ds === 'paid') { $shp_claim_type = 'cancel'; $shp_claim_label = $lang->shop_cancel_order; }
+	elseif ($shp_ds === 'preparing') { $shp_claim_type = 'cancel'; $shp_claim_label = $lang->shop_request_cancel; }
+	elseif ($shp_ds === 'shipping' || $shp_ds === 'delivered') { $shp_claim_type = 'return'; $shp_claim_label = $lang->shop_request_return; }
+	@endphp
+	@if ($shp_claim_type !== '')
+	<form action="{{ getUrl('') }}" method="post" style="margin-top:8px" onsubmit="return confirm('{{ $lang->shop_claim_confirm }}')">
+		<input type="hidden" name="act" value="procCommerceClaim" />
+		<input type="hidden" name="mid" value="{{ $mid }}" />
+		<input type="hidden" name="order_code" value="{{ $order->order_code }}" />
+		<input type="hidden" name="claim_type" value="{{ $shp_claim_type }}" />
+		@if ($order->member_srl == 0)
+		<input type="hidden" name="guest_password" value="{{ escape(Context::get('gp')) }}" />
+		@endif
+		<div class="shp-row">
+			<label>{{ $lang->shop_claim_reason }}</label>
+			<input type="text" name="reason" placeholder="{{ $lang->shop_claim_reason_ph }}" />
+		</div>
+		<button type="submit" class="shp-btn shp-btn-ghost" style="width:100%">{{ $shp_claim_label }}</button>
+	</form>
+	@endif
+
+	<p class="shp-foot-links">
+		<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceList') }}">{{ $lang->shop_back_list }}</a>
+		<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceMyOrders') }}">{{ $lang->shop_my_orders }}</a>
+	</p>
+</div>
