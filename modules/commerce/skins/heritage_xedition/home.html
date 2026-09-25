@@ -35,7 +35,6 @@
 	@if (($shop_config->category_layout ?? 'top') !== 'side' && count($shop_categories ?? []))
 	<div class="shp-catpanel" id="shpCatPanel" hidden>
 		@php
-			// 1차 카테고리를 열로 세우고 하위는 그 아래에 모은다
 			$shp_cat_cols = [];
 			$shp_cat_cur = -1;
 			foreach ($shop_categories as $shp_c) {
@@ -128,7 +127,7 @@
 				</div>
 				<div class="shp-promo-cards">
 					@foreach ($home_promotions as $shp_pm)
-					<a class="shp-promo-card" href="{{ getUrl('', 'mid', $mid, 'v', 'promo', 'p', $shp_pm->slug) }}" style="{{ $shp_pm->banner_data['bg_style'] ?? '' }}">
+					<a class="shp-promo-card align-{{ in_array($shp_pm->banner_data['align'] ?? 'left', ['center', 'right'], true) ? $shp_pm->banner_data['align'] : 'left' }}" href="{{ getUrl('', 'mid', $mid, 'v', 'promo', 'p', $shp_pm->slug) }}" style="{{ $shp_pm->banner_data['bg_style'] ?? '' }}">
 						<span class="shp-promo-card-copy {{ ($shp_pm->banner_data['shadow'] ?? 'Y') === 'N' ? 'no-shadow' : '' }}" style="color:{{ $shp_pm->banner_data['text_color'] ?? '#ffffff' }}">
 							<strong>{!! $shp_pm->banner_data['title_html'] ?? escape($shp_pm->title) !!}</strong>
 							@if (!empty($shp_pm->banner_data['text']))<span>{!! $shp_pm->banner_data['text_html'] ?? escape($shp_pm->banner_data['text']) !!}</span>@endif
@@ -151,7 +150,7 @@
 				</div>
 				<div class="shp-grid">
 					@foreach ($section->items as $it)
-					<a class="shp-card" href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceItem', 'item_srl', $it->item_srl) }}">
+					<a class="shp-card" href="{{ !empty($it->item_url) ? $it->item_url : getUrl('', 'mid', $mid, 'act', 'dispCommerceItem', 'item_srl', $it->item_srl) }}">
 						<span class="shp-card-thumb" @if (!empty($it->thumb)) style="background-image:url('{{ escape($it->thumb) }}')" @endif>
 							@if (empty($it->thumb))<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2zM8.5 11l2.5 3 3.5-4.5L19 16H5z"/></svg>@endif
 						</span>
@@ -169,6 +168,7 @@
 					@endforeach
 								@if ($it->is_new === 'Y')<span class="shp-badge">NEW</span>@endif
 							</span>
+							@if (!empty($it->seller_name) && ($shop_config->show_seller_on_card ?? 'Y') !== 'N')<span class="shp-card-seller">{{ $it->seller_name }}</span>@endif
 							<span class="shp-card-name">{{ $it->item_name }}</span>
 							@if (!empty($it->review_count))
 							<span class="shp-card-rating">
@@ -192,6 +192,7 @@
 								<strong>{{ shop_item_price($it, 'price') }}</strong>
 								@endif
 							</span>
+							@if (function_exists('shop_timesale_badge')){!! shop_timesale_badge($it) !!}@endif
 						</span>
 					</a>
 					@endforeach
@@ -240,7 +241,6 @@
 
 <script>
 (function () {
-	// 상단 카테고리 메뉴 펼치기
 	var btn = document.getElementById('shpCatBtn');
 	var panel = document.getElementById('shpCatPanel');
 	if (!btn || !panel) return;

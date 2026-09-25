@@ -29,7 +29,6 @@
 					@endforeach
 				</dl>
 				@endif
-			{{-- 아래 합계 계산도 위 표시가와 같은 값을 써야 한다. 등급가가 있으면 그것이 기준가다 --}}
 			@php $shp_buy_price = !empty($item->grade_price) ? (int)$item->grade_price : (int)($disp_effective_price ?? $effective_price); @endphp
 			<p class="shp-detail-price">
 				@if (!empty($item->grade_price))
@@ -47,6 +46,7 @@
 				{{ shop_item_price($item, 'price') }}
 				@endif
 			</p>
+			@if (function_exists('shop_timesale_badge')){!! shop_timesale_badge($item, 'detail') !!}@endif
 
 			@php
 			$shp_ship_type = $item->ship_fee_type ?? 'default';

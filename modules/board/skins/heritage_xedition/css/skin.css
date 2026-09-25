@@ -4,7 +4,6 @@
 
 .hrb-blind { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
 
-/* 게시판 타이틀 헤더: 얇은 구분선 위에 3px 포인트색 짧은 라인 (서브 타이틀 밴드와 같은 문법) */
 .hrb-board-head { position: relative; display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin: 0 0 26px; padding: 0 0 18px; border-bottom: 1px solid var(--hr-line); }
 .hrb-board-head-text { min-width: 0; }
 .hrb-board-head .hrb-write-top { flex: none; }
@@ -17,7 +16,6 @@
 .hrb-notice-text { margin: 0 0 20px; padding: 16px 18px; border: 1px solid var(--hr-line); border-radius: var(--hr-radius-sm); background: var(--hr-surface); font-size: 14px; }
 .hrb-notice-text.is-footer { margin: 24px 0 0; }
 
-/* 분류 줄 + 글쓰기 버튼. 밑줄은 툴바가 그린다. 분류에 두면 버튼 폭만큼 짧아진다 */
 .hrb-toolbar { display: flex; align-items: flex-end; gap: 12px; margin: 0 0 24px; border-bottom: 1px solid var(--hr-ink-sub); }
 .hrb-toolbar.is-bare { justify-content: flex-end; border-bottom: 0; }
 .hrb-toolbar .hrb-cats { flex: 1; min-width: 0; margin: 0; border-bottom: 0; }
@@ -44,7 +42,6 @@
 }
 .hrb-cats .hr-chip em { font-style: normal; opacity: .6; font-size: 12px; }
 
-/* 목록 테이블: 위아래 굵은 구분선, 헤더는 밝은 바탕 + 더블 보더 */
 .hrb-table { table-layout: auto; font-size: 13.5px; border-top: 1px solid var(--hr-ink-sub); border-bottom: 1px solid var(--hr-line); }
 .hrb-table thead th {
 	padding: 12px 8px;
@@ -65,9 +62,7 @@
 
 .hrb-table .hrb-col-no, .hrb-table .hrb-col-num { width: 62px; }
 .hrb-table .hrb-col-date { width: 88px; white-space: nowrap; }
-/* 글쓴이 칸: 사진+닉네임 줄바꿈만 막는다. 폭·말줄임 지정은 모바일 배치와 충돌한다 */
 .hrb-table tbody td.hrb-col-author { white-space: nowrap; padding-left: 13px; padding-right: 27px; }
-/* 칸이 아니라 닉네임에 제한을 건다. 제목 칸이 남는 폭을 흡수해서, 긴 닉네임을 두면 제목이 찌그러진다 */
 .hrb-table tbody td.hrb-col-author > a,
 .hrb-table tbody td.hrb-col-author > .hrb-nick {
 	display: inline-block;
@@ -85,7 +80,6 @@
 
 .hrb-table th.hrb-col-title, .hrb-table td.hrb-col-title { text-align: left; }
 .hrb-table tbody td.hrb-col-title { max-width: 0; width: 100%; overflow: hidden; white-space: nowrap; }
-/* 제목만 줄인다. 뒤따르는 댓글수·첨부·N 은 잘리지 않는다 */
 .hrb-table tbody td.hrb-col-title .hrb-title-link { display: inline-block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: bottom; }
 .hrb-table th.hrb-col-author, .hrb-table td.hrb-col-author { text-align: left; }
 .hrb-table.hrb-author-center th.hrb-col-author, .hrb-table.hrb-author-center td.hrb-col-author { text-align: center; }
@@ -108,7 +102,6 @@
 .hrb-cmt { margin-left: 5px; font-style: normal; font-size: 12.5px; font-weight: 700; color: var(--hr-brand); }
 .hrb-ico { width: 14px; height: 14px; fill: var(--hr-muted); vertical-align: -2px; }
 .hrb-ico-file { margin-left: 5px; }
-/* 새 글 표시: 글자 없는 작은 포인트색 사각형 (zitt.me 공홈의 새 글 점 표기의 사각 버전) */
 .hrb-new {
 	display: inline-block;
 	margin-left: 6px;
@@ -185,7 +178,6 @@
 .hrb-bar-actions { display: flex; gap: 6px; margin-left: auto; }
 .hrb-division { margin: 16px 0 0; text-align: center; }
 
-/* 글읽기: 큰 제목 + 밑줄 메타 줄 */
 .hrb-read { padding-bottom: 26px; border-bottom: 1px solid var(--hr-line); }
 .hrb-read-head { padding: 0; border-bottom: 0; }
 .hrb-read-title {
@@ -270,10 +262,8 @@
 
 .hrb-content { padding: 28px 0; font-size: 16px; line-height: 1.8; }
 .hrb-content img { max-width: 100%; height: auto; }
-/* 테마가 .hr a 로 링크 색을 모두 죽인다. 글쓴이가 넣은 본문 링크만 되살린다 */
 .hrb-content a[href] { color: var(--hr-brand); text-decoration: underline; text-underline-offset: 2px; }
 .hrb-content a[href]:hover { text-decoration-thickness: 2px; }
-/* 사진이나 파일을 감싼 링크에는 밑줄을 긋지 않는다 */
 .hrb-content a[href]:has(img) { text-decoration: none; }
 
 .hrb-extras { margin: 0 0 20px; border-top: 1px solid var(--hr-line-soft); }
@@ -426,7 +416,6 @@
 .hrb-tag.r5 { font-size: 13px; color: var(--hr-muted); }
 .hrb-tag-foot { padding-top: 16px; border-top: 1px solid var(--hr-line); }
 
-/* 페이지네이션: 미니멀 숫자 줄. 현재 페이지는 포인트색 숫자 + 밑줄, 화살표는 가는 SVG */
 .hrb .hr-pages { gap: 2px; }
 .hrb .hr-pages a, .hrb .hr-pages strong {
 	position: relative;
@@ -459,7 +448,6 @@
 .hrb .hr-pages .hrb-page-arrow svg { width: 15px; height: 15px; fill: currentColor; vertical-align: -3px; }
 .hrb .hr-pages .hrb-page-arrow:hover { color: var(--hr-brand); }
 
-/* 플랫 버튼: 연회색, 호버 시 포인트색 */
 .hrb .hr-btn,
 .hrb a.hr-btn,
 .hrb button.hr-btn,
@@ -521,12 +509,9 @@
 		border-bottom: 1px solid var(--hr-line-soft);
 	}
 	.hrb-table tbody td { display: inline; width: auto; padding: 0; border: 0; text-align: left; font-size: 12.5px; }
-	/* 글쓴이 칸 여백은 PC 표 전용이다. 한 줄로 붙는 모바일에서는 구분점만으로 충분하다 */
 	.hrb-table tbody td.hrb-col-author { padding: 0; }
-	/* 좁은 화면에서는 더 줄인다. 외국 닉네임은 훨씬 길다 */
 	.hrb-table tbody td.hrb-col-author > a,
 	.hrb-table tbody td.hrb-col-author > .hrb-nick { max-width: 7em; }
-	/* 날짜 칸 고정폭은 PC 표 전용. 한 줄로 붙는 모바일에서는 글자 너비만 쓴다 */
 	.hrb-table tbody td.hrb-col-date { width: auto; }
 	.hrb-table tbody td.hrb-col-title { display: block; width: 100%; max-width: none; margin-bottom: 3px; padding-right: 28px; }
 	.hrb-table .hrb-title-link { font-size: 15px; line-height: 1.5; }
@@ -565,7 +550,6 @@
 	.hrb-notices-meta { display: none; }
 	.hrb-card-body { padding: 12px 16px 16px; }
 	.hrb-card-title { font-size: 15px; }
-	/* 제목 글자만 두 줄로 줄인다. 댓글수·N 은 마지막 줄 뒤에 그대로 붙는다 */
 	.hrb-card-titletext {
 		display: -webkit-inline-box;
 		-webkit-line-clamp: 2;

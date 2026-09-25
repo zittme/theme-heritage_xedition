@@ -9,7 +9,6 @@ if (!function_exists('hr_visual_text'))
 	}
 }
 @endphp
-{{-- 비주얼 슬라이더는 항상 화면 전체 폭 --}}
 <section class="hr-visual" data-interval="{{ $hr_interval }}" aria-roledescription="carousel" aria-label="{{ $lang->hr_visual_label }}">
 	<div class="hr-visual-track">
 		@foreach ($hr_visuals as $hr_vi => $hr_v)
@@ -20,7 +19,7 @@ if (!function_exists('hr_visual_text'))
 				@if (!empty($hr_v['title']))<h2>{!! hr_visual_text($hr_v['title']) !!}</h2>@endif
 				@if (!empty($hr_v['text']))<p>{!! hr_visual_text($hr_v['text']) !!}</p>@endif
 				@if (!empty($hr_v['link_url']) && !empty($hr_v['link_text']))
-				<a class="hr-btn hr-btn-primary hr-btn-lg" href="{{ $hr_v['link_url'] }}">{{ $hr_v['link_text'] }}</a>
+				<a class="hr-btn hr-btn-primary hr-btn-lg" href="{{ $hr_v['link_url'] }}"@if (($hr_v['link_target'] ?? '') === '_blank') target="_blank" rel="noopener"@endif>{{ $hr_v['link_text'] }}</a>
 				@endif
 			</div>
 		</div>

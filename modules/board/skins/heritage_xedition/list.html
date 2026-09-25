@@ -16,7 +16,6 @@ if (!function_exists('hrb_relative_time')) {
 		$ts = ztime($regdate);
 		if (!$ts) { return ''; }
 		$diff = time() - $ts;
-		// 문구는 스킨 언어 파일에서 받는다. 여기 박으면 다른 언어에서 한국어가 나온다
 		if ($diff < 60) { return lang('hrb_just_now'); }
 		if ($diff < 3600) { return sprintf(lang('hrb_minutes_ago'), floor($diff / 60)); }
 		if ($diff < 86400) { return sprintf(lang('hrb_hours_ago'), floor($diff / 3600)); }
@@ -43,8 +42,6 @@ foreach ($document_list ?: [] as $hrb_dk => $hrb_dd) { $hrb_docs[$hrb_dk] = $hrb
 	</div>
 	@endif
 
-	{{-- 목록이 길면 아래 글쓰기 버튼까지 내려가야 한다. 그래서 위에도 둔다 --}}
-	{{-- 단, 타이틀 헤더를 쓰는 게시판은 글쓰기 버튼이 헤더에 있으므로 여기서는 뺀다 --}}
 	@php $hrb_head_on = trim($module_info->hr_board_title ?? '') !== ''; @endphp
 	@if (($hrb_cat && count($category_list)) || (!$hrb_head_on && $grant->write_document))
 	<div class="hrb-toolbar @if (!($hrb_cat && count($category_list))) is-bare @endif">
@@ -138,7 +135,6 @@ foreach ($document_list ?: [] as $hrb_dk => $hrb_dd) { $hrb_docs[$hrb_dk] = $hrb
 				<td class="hrb-col-author">
 					@php $hrb_row_photo = (($module_info->hr_show_photo ?? 'Y') === 'Y') ? $document->getProfileImage() : ''; @endphp
 					@if ($hrb_row_photo)<img class="hrb-photo" src="{{ $hrb_row_photo }}" alt="" />@endif
-					{{-- 기여 뱃지 애드온이 member_ 요소 안쪽을 다시 쓴다. 이 안에 태그를 더 넣으면 안 된다 --}}
 					@if ($document->get('member_srl') > 0)
 					<a href="#popup_menu_area" class="member_{{ $document->get('member_srl') }}" onclick="return false">{{ $document->getNickName() }}</a>
 					@else<span class="hrb-nick">{{ $document->getNickName() }}</span>@endif

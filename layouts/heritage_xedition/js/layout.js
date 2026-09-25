@@ -8,20 +8,17 @@
 
 	ready(function () {
 
-		// 헤더와 모바일 서랍에 하나씩 있다. 둘 다 같은 동작을 한다
 		var themeBtns = document.querySelectorAll('[data-hr-theme-toggle]');
 		for (var t = 0; t < themeBtns.length; t++) {
 			themeBtns[t].addEventListener('click', function () {
 				var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
 				document.documentElement.setAttribute('data-theme', next);
-				// 코어와 코어 스킨은 body 클래스를 본다. 토글할 때도 함께 갈아 끼운다
 				document.body.classList.remove('color_scheme_light', 'color_scheme_dark');
 				document.body.classList.add('color_scheme_' + next);
 				try { localStorage.setItem('hr-theme', next); } catch (e) {}
 			});
 		}
 
-		// 서랍·푸터의 언어 셀렉트는 값이 곧 이동할 주소다
 		var langNavs = document.querySelectorAll('#hr_mobile_lang, select[data-hr-lang-nav]');
 		for (var ln = 0; ln < langNavs.length; ln++) {
 			langNavs[ln].addEventListener('change', function () {
@@ -29,7 +26,6 @@
 			});
 		}
 
-		// 언어 목록: 버튼으로 여닫고, 바깥을 누르거나 Esc 로 닫는다
 		var langBox = document.getElementById('hr_lang');
 		if (langBox) {
 			var langBtn = langBox.querySelector('.hr-lang-btn');
@@ -52,7 +48,6 @@
 			});
 		}
 
-		// 스크롤하면 헤더를 줄여서 상단에 고정한다 (sticky + is-shrink)
 		var utilrow = document.querySelector('.hr-utilrow');
 		if (utilrow) {
 			var shrinkOn = false;
@@ -67,7 +62,6 @@
 			onScroll();
 		}
 
-		// 검색 오버레이: 아이콘으로 열고, X·Esc·바깥 클릭으로 닫는다
 		var searchOpen = document.getElementById('hr_search_open');
 		var searchBar = document.getElementById('hr_searchbar');
 		if (searchOpen && searchBar) {
@@ -104,7 +98,6 @@
 			});
 		}
 
-		// GNB 드롭다운은 CSS(:hover, :focus-within)가 연다. Esc 로 초점만 풀어 준다
 		var gnb = document.getElementById('hr_gnb');
 		if (gnb) {
 			document.addEventListener('keydown', function (e) {

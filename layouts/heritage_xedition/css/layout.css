@@ -4,7 +4,6 @@ html, body { margin: 0; background: var(--hr-bg); }
 
 .hr-layout { display: flex; flex-direction: column; min-height: 100vh; background: var(--hr-bg); }
 
-/* 헤더: 로고·GNB·유틸 한 줄. 스크롤 시 높이 축소 + 반투명 블러(is-shrink) */
 .hr-utilrow {
 	border-bottom: 1px solid var(--hr-line-soft);
 	background: var(--hr-bg);
@@ -24,7 +23,6 @@ html, body { margin: 0; background: var(--hr-bg); }
 .hr-utilrow.is-shrink .hr-utilrow-inner { min-height: 60px; }
 .hr-utilrow.is-shrink .hr-logo { font-size: 24px; }
 .hr-utilrow.is-shrink .hr-logo img { height: 30px; }
-/* 헤더는 본문 폭과 무관하게 화면 전체를 쓴다 */
 .hr-utilrow-inner {
 	position: relative;
 	display: flex;
@@ -37,7 +35,6 @@ html, body { margin: 0; background: var(--hr-bg); }
 }
 .hr-logo { transition: font-size .2s ease; }
 .hr-logo img { transition: height .2s ease; }
-/* GNB 정렬 옵션: g-left(기본) = 로고 바로 옆, g-center = 화면 정가운데 */
 .hr-utilrow-inner.g-left .hr-gnb { margin-left: 8px; margin-right: auto; }
 .hr-utilrow-inner.g-center .hr-gnb {
 	position: absolute;
@@ -73,7 +70,6 @@ html, body { margin: 0; background: var(--hr-bg); }
 .hr-iconbtn svg { width: 20px; height: 20px; fill: currentColor; }
 .hr-iconbtn:hover { color: var(--hr-brand); }
 
-/* 프로필 영역: 포인트색 박스(사진+닉네임+벨), 호버 시 다크 드롭다운 */
 .hr-me {
 	position: relative;
 	display: flex;
@@ -121,7 +117,6 @@ html, body { margin: 0; background: var(--hr-bg); }
 .hr-me-menu a { display: block; padding: 9px 20px; font-size: 13px; color: rgba(255, 255, 255, .68); white-space: nowrap; }
 .hr-me-menu a:hover { color: var(--hr-brand-light); }
 
-/* 검색 오버레이: 헤더 줄 전체를 덮는 대형 인풋 */
 .hr-searchbar {
 	position: absolute;
 	inset: 0;
@@ -187,7 +182,6 @@ html, body { margin: 0; background: var(--hr-bg); }
 .hr-search button svg { width: 17px; height: 17px; fill: currentColor; }
 .hr-search button:hover { color: var(--hr-brand); }
 
-/* 언어 전환 */
 .hr-lang { position: relative; }
 .hr-lang-btn {
 	display: inline-flex;
@@ -251,7 +245,6 @@ html, body { margin: 0; background: var(--hr-bg); }
 [data-theme="dark"] .hr-ico-moon { display: inline; }
 
 
-/* 다크 요소(드롭다운·푸터 바·서랍) 공통 색: 골드에 맞춘 웜 차콜 */
 .hr-layout { --hr-nav-bg: #1b1914; --hr-nav-fg-on: #fff; }
 .hr-layout { --hr-brand-light: color-mix(in srgb, var(--hr-brand) 70%, #fff); }
 [data-theme="dark"] .hr-layout { --hr-nav-bg: #24211a; }
@@ -269,7 +262,6 @@ html, body { margin: 0; background: var(--hr-bg); }
 	--hr-nav-deep: var(--hr-bg);
 }
 
-/* GNB: 항목별 다크 드롭다운, 상단 3px 포인트색 라인 */
 .hr-gnb { margin-left: auto; align-self: stretch; }
 .hr-gnb-list { display: flex; height: 100%; }
 .hr-gnb-list > li { position: relative; display: flex; align-items: stretch; }
@@ -334,13 +326,11 @@ html, body { margin: 0; background: var(--hr-bg); }
 
 .hr-mobile-dim { position: fixed; inset: 0; z-index: 190; background: rgba(0, 0, 0, .45); opacity: 0; transition: opacity .22s ease; }
 .hr-mobile-dim.is-open { opacity: 1; }
-/* 서랍은 메뉴 바 색상 옵션과 무관하게 항상 다크 톤 */
-/* 메뉴가 늘어나도 아래 도구 줄은 자리를 지킨다. 가운데 목록만 굴린다 */
-/* 모바일 서랍: 포인트컬러 베이스. 깊이는 검정 반투명으로만 낸다 */
 .hr-mobile { position: fixed; top: 0; right: 0; bottom: 0; z-index: 200; width: min(320px, 85vw); --hr-nav-fg-on: #fff; background: var(--hr-brand); color: var(--hr-nav-fg-on); display: flex; flex-direction: column; overscroll-behavior: contain; transform: translateX(100%); transition: transform .24s ease; box-shadow: -8px 0 32px rgba(0, 0, 0, .25); }
 .hr-mobile[hidden] { display: none; }
 .hr-mobile .hr-mobile-head, .hr-mobile .hr-mobile-account, .hr-mobile .hr-mobile-tools { flex: none; }
-.hr-mobile .hr-mobile-list { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+.hr-mobile { height: 100vh; height: 100dvh; max-height: 100dvh; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; padding-bottom: env(safe-area-inset-bottom, 0px); }
+.hr-mobile .hr-mobile-list { flex: none; min-height: auto; }
 .hr-mobile.is-open { transform: translateX(0); }
 .hr-mobile-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 16px; border-bottom: 1px solid rgba(255, 255, 255, .25); }
 .hr-mobile-title { font-size: 15px; font-weight: 800; color: var(--hr-nav-fg-on); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -396,7 +386,6 @@ body.hr-mobile-on { overflow: hidden; }
 .hr-mobile-sub2 a { padding: 7px clamp(38px, 8vw, 60px); font-size: 13px; color: rgba(255, 255, 255, .55); }
 .hr-mobile-sub2 a::before { content: "- "; }
 
-/* 비주얼: 항상 화면 전체 폭 */
 .hr-visual { position: relative; overflow: hidden; background: #141210; }
 .hr-visual-track { position: relative; height: clamp(320px, 42vw, 600px); }
 .hr-visual-item {
@@ -418,9 +407,10 @@ body.hr-mobile-on { overflow: hidden; }
 .hr-visual-copy h2 { font-family: var(--hr-font-display, inherit); font-size: clamp(26px, 4vw, 44px); font-weight: 800; letter-spacing: .01em; line-height: 1.22; text-shadow: 0 2px 24px rgba(0, 0, 0, .35); }
 .hr-visual-copy p { margin: 14px auto 0; max-width: 620px; font-size: clamp(14px, 1.5vw, 17px); color: rgba(255, 255, 255, .86); }
 .hr-visual-item.align-left .hr-visual-copy p { margin-left: 0; }
+.hr-visual-item.align-right .hr-visual-copy { text-align: right; }
+.hr-visual-item.align-right .hr-visual-copy p { margin-right: 0; }
 .hr-visual-copy .hr-btn { margin-top: 24px; }
 
-/* 슬라이더 내비: 글래스 사각 버튼 + 포인트색 프로그레스 도트 */
 .hr-visual-nav {
 	position: absolute;
 	top: 50%;
@@ -446,7 +436,6 @@ body.hr-mobile-on { overflow: hidden; }
 .hr-visual-nav.prev { left: clamp(16px, 2.5vw, 36px); }
 .hr-visual-nav.next { right: clamp(16px, 2.5vw, 36px); }
 
-/* 슬라이더 페이지네이션: 사각 도트, 현재 페이지는 세로로 긴 포인트색 사각형 */
 .hr-visual-dots { position: absolute; left: 0; right: 0; bottom: 24px; display: flex; justify-content: center; align-items: flex-end; gap: 8px; }
 .hr-visual-dots button {
 	width: 9px;
@@ -462,10 +451,8 @@ body.hr-mobile-on { overflow: hidden; }
 .hr-visual-dots button.is-on { height: 22px; background: var(--hr-brand); }
 
 .hr-body { flex: 1 0 auto; padding: clamp(28px, 4vw, 44px) 0 clamp(48px, 6vw, 72px); }
-/* 서브 그리드: LNB 260px + 본문 */
 .hr-body.has-lnb .hr-body-inner { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 40px; }
 
-/* LNB: 타이틀 구분선+포인트색 라인, 활성 항목 왼쪽 3px 바, 하위 메뉴 셰브런 */
 .hr-lnb { padding-top: 6px; }
 .hr-lnb-title, .hr-lnb > .hr-lnb-title {
 	position: relative;
@@ -504,7 +491,6 @@ body.hr-mobile-on { overflow: hidden; }
 }
 .hr-lnb-arrow { flex: none; width: 14px; height: 14px; fill: currentColor; opacity: .5; transition: transform .18s ease; }
 .hr-lnb-list > li.is-on .hr-lnb-arrow { transform: rotate(180deg); opacity: .8; }
-/* 2차 메뉴: SVG 꺾임 화살표로 들여쓰기 */
 .hr-lnb-sub { margin: 0 0 8px; padding: 2px 0 4px 14px; border-top: 0; background: none; }
 .hr-lnb-sub a { display: flex; align-items: center; gap: 7px; padding: 6px 0; font-size: 13.5px; color: var(--hr-muted); transition: color .14s; }
 .hr-lnb-sub-ico { flex: none; width: 13px; height: 13px; fill: currentColor; opacity: .45; }
@@ -518,7 +504,6 @@ body.hr-mobile-on { overflow: hidden; }
 
 .hr-content { min-width: 0; padding-bottom: 10px; }
 
-/* 푸터: 본문 폭 좌측 정렬 컬럼 + 전폭 다크 카피라이트 바 + 3px 포인트색 선 */
 .hr-footer { flex: none; padding: clamp(40px, 5vw, 56px) 0 0; border-top: 1px solid var(--hr-line); border-bottom: 3px solid var(--hr-brand); background: var(--hr-surface); color: var(--hr-muted); font-size: 13.5px; }
 .hr-footer-inner { padding-bottom: 30px; }
 .hr-footer-bar { background: var(--hr-nav-bg); color: rgba(255, 255, 255, .72); }
@@ -536,13 +521,11 @@ body.hr-mobile-on { overflow: hidden; }
 .hr-footer-bottom { display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; margin: 0; padding-top: 15px; padding-bottom: 15px; border-top: 0; font-size: 12.5px; }
 .hr-footer-bottom a:hover { text-decoration: underline; }
 
-/* 서브 타이틀 밴드: 회색 띠, 제목 밑 22px 밑줄 */
 .hr-subhead { background: var(--hr-surface); border-bottom: 1px solid var(--hr-line-soft); }
 .hr-subhead h1 { position: relative; margin: 0; padding: 30px 0 34px; font-family: var(--hr-font-display, inherit); font-size: 18px; font-weight: 700; letter-spacing: .01em; color: var(--hr-ink); }
 .hr-subhead h1::after { content: ""; position: absolute; left: 0; bottom: 22px; width: 22px; height: 2px; background: var(--hr-brand); }
 .hr-top-btn { display: inline-flex; align-items: center; gap: 5px; font-weight: 600; }
 
-/* 푸터 다크모드·언어 컨트롤: 모바일 + '푸터' 옵션에서만 보인다 */
 .hr-foot-tools { display: none; align-items: center; gap: 10px; }
 .hr-foot-theme {
 	display: inline-flex;
@@ -584,16 +567,13 @@ body.hr-mobile-on { overflow: hidden; }
 	.hr-logo img { height: 32px; }
 	.hr-gnb, .hr-utilrow-inner.g-center .hr-gnb, .hr-search, .hr-util-link { display: none; }
 	.hr-utilrow-inner { min-height: 0; }
-	/* GNB 가 숨으면 우측으로 밀어줄 요소가 없다. 유틸(빵메뉴 포함)을 오른쪽 끝에 붙인다 */
 	.hr-utils { margin-left: auto; }
 	.hr-burger { display: block; }
 
-	/* 좁은 화면에서는 알림과 햄버거만 남긴다. 나머지는 서랍 아래 도구 줄에 있다 */
 	.hr-utilrow-inner { gap: 12px; }
 	.hr-logo { min-width: 0; }
 	.hr-utils { gap: 8px; }
 	.hr-utils a.hr-util-admin, .hr-lang, .hr-theme, .hr-me, .hr-search-open, .hr-searchbar { display: none; }
-	/* 모바일 위치 옵션: '헤더'로 지정된 컨트롤은 좁은 화면에서도 헤더에 남긴다 */
 	.mtp-header .hr-theme { display: inline-flex; }
 	.mlp-header .hr-lang { display: block; }
 
@@ -646,13 +626,11 @@ body.hr-mobile-on { overflow: hidden; }
 .hr .hr-visual-copy a.hr-btn:active,
 .hr-visual-copy .hr-btn:active { transform: translateY(0); }
 
-/* ── 알림센터 헤더 벨 ── */
 .hr-nc { position: relative; display: flex; align-items: center; }
 .hr-nc-btn { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border: 0; border-radius: 50%; background: transparent; color: var(--hr-ink-sub); cursor: pointer; transition: background .13s, color .13s; }
 .hr-nc-btn svg { width: 19px; height: 19px; fill: currentColor; }
 .hr-nc-btn:hover { background: var(--hr-brand-soft); color: var(--hr-brand); }
 .hr-nc-badge { position: absolute; top: 0; right: -1px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 999px; background: #e5484d; color: #fff; font-size: 10px; font-weight: 800; font-style: normal; line-height: 16px; text-align: center; box-shadow: 0 0 0 2px var(--hr-bg, #fff); }
-/* 골드 프로필 박스 안에 있어도 패널 글자는 잉크색을 쓴다 (흰색 상속 차단) */
 .hr-nc-panel { color: var(--hr-ink); }
 .hr-nc-panel .hr-nc-all { color: var(--hr-brand); }
 .hr-nc-panel { position: absolute; top: calc(100% + 10px); right: -6px; width: 330px; border-radius: 0; background: var(--hr-surface, #fff); border: 1px solid var(--hr-line); box-shadow: 0 24px 60px -18px rgba(17, 22, 30, .25); overflow: hidden; z-index: 1200; }
@@ -674,14 +652,12 @@ body.hr-mobile-on { overflow: hidden; }
 	.hr-nc-panel { position: fixed; top: 60px; left: 12px; right: 12px; width: auto; }
 }
 
-/* 비주얼 문구는 좌우 화살표(46px + 여백)와 겹치지 않게 안쪽으로 들인다 */
 @media (max-width: 1680px) {
 	.hr-visual-copy { padding-left: clamp(72px, 7vw, 110px); padding-right: clamp(72px, 7vw, 110px); }
 }
 @media (max-width: 860px) {
-	.hr-visual-copy { padding-left: 28px; padding-right: 28px; }
+	.hr-visual-copy, .hr-visual.is-boxed .hr-visual-copy { padding-left: 80px; padding-right: 80px; }
 }
-/* 푸터 카피라이트 줄은 전폭 바 안에 있으므로 항상 좌우 여백을 둔다 */
 .hr-footer-bottom { padding-left: clamp(16px, 2.6vw, 40px); padding-right: clamp(16px, 2.6vw, 40px); }
 
 .hr-logo { flex: none; }

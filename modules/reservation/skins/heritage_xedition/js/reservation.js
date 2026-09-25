@@ -1,4 +1,3 @@
-/* 예약 달력 — 월 단위로 잔여 슬롯(JSON)을 받아 그린다 */
 (function () {
 	'use strict';
 
@@ -17,7 +16,7 @@
 
 		var current = new Date();
 		current.setDate(1);
-		var slotsByDate = {}; // 'YYYYMMDD' -> [slot]
+		var slotsByDate = {};
 		var selectedYmd = null;
 
 		var DOW = (root.getAttribute('data-dow') || 'Sun,Mon,Tue,Wed,Thu,Fri,Sat').split(',');

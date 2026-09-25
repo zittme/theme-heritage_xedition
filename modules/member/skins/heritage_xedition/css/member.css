@@ -1,8 +1,6 @@
 @charset "utf-8";
 
 .xm {
-    /* 레이아웃(heritage) 토큰을 따르고, 레이아웃 밖에서는 폴백을 쓴다.
-     * hover/light/soft 파생색은 color-mix 미지원 브라우저용 고정값 — 지원되면 아래 @supports 가 덮는다 */
     --zm-brand: var(--hr-brand, #cda25a);
     --zm-brand-hover: #b3873f;
     --zm-brand-light: #dcbc84;
@@ -22,7 +20,6 @@
     word-break: keep-all;
     overflow-wrap: break-word;
 }
-/* 어두운 판의 색은 위에서 물려받은 hr 토큰이 알아서 바뀐다. 레이아웃 밖에서 쓰일 때만 여기 값이 쓰인다 */
 [data-theme="dark"] .xm {
     --zm-brand-soft: var(--hr-brand-soft, rgba(205, 162, 90, 0.2));
     --zm-bg: var(--hr-bg, #17150f);
@@ -101,7 +98,6 @@
 .xm .btnArea { display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin: 0 0 16px; }
 .xm form > .btnArea:last-child, .xm form .btnArea:last-of-type { margin-top: 24px; margin-bottom: 0; }
 
-/* 로그인 카드: 그림자 없이 직각, 상단 3px 포인트색 라인으로 마감 */
 .xm .signin { max-width: 420px; margin: 0 auto; padding: 32px 28px; border: 1px solid var(--zm-border); border-top: 3px solid var(--zm-brand); border-radius: 0; background: var(--zm-bg); box-shadow: none; }
 .xm .signin input[type="text"], .xm .signin input[type="password"], .xm .signin input[type="email"] { max-width: 100%; }
 .xm .signin .btnArea { border-top: 0; padding-top: 4px; justify-content: stretch; }
@@ -267,7 +263,6 @@
 .zmy { font-size: 16px; }
 .zmy-wrap { display: flex; gap: 40px; align-items: flex-start; }
 .zmy-side { flex: 0 0 224px; position: sticky; top: 90px; }
-/* 프로필 카드: 상단 3px 포인트색 라인 + 가로형 그리드 (아바타 | 닉네임/이메일) */
 .zmy-profile {
 	display: grid;
 	grid-template-columns: 52px minmax(0, 1fr);
@@ -286,7 +281,6 @@
 .zmy-avatar em { font-style: normal; }
 .zmy-nick { align-self: end; font-size: 15.5px; font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .zmy-email { align-self: start; font-size: 12.5px; color: var(--zm-text-sub); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-/* 메뉴: 레이아웃 LNB 와 같은 문법 — 활성 항목 왼쪽 3px 포인트색 바, hover 시 살짝 밀림 */
 .zmy-nav ul { list-style: none; margin: 0; padding: 0; display: block; border: 0; }
 .zmy-nav li { margin: 0; }
 .zmy-nav a { display: block; padding: 11px 2px; border-radius: 0; font-size: 14.5px; font-weight: 600; color: var(--zm-text-sub); text-decoration: none; transition: color .14s, padding-left .14s, box-shadow .14s; }
@@ -308,7 +302,6 @@
 	.zmy-nav li.active a { border-color: transparent; }
 }
 
-/* 플랫 버튼: 연회색, 호버 시 포인트색. 높이는 폼 인풋과 같은 44px */
 .xm .btn, .xm a.btn, .xm button.btn, .xm input.btn {
     box-sizing: border-box;
     min-height: 44px;
@@ -356,7 +349,6 @@
 .zmy-avatar { background: var(--zm-brand, #cda25a); border-radius: 0; }
 .zmy-nav a { border-radius: 0; }
 
-/* 로그인 상자 간격 — 제목 밑줄과 입력칸, 로그인 유지와 버튼이 붙어 보이던 것 */
 .xm .signin .login-header h1 { padding-bottom: 12px; margin-bottom: 22px; }
 .xm .signin .control-group { margin-bottom: 14px; }
 .xm .signin .control-group:last-of-type { margin-bottom: 0; }
@@ -397,7 +389,6 @@
 .xm .member-sns-login-sep:before, .xm .member-sns-login-sep:after { content: ""; flex: 1; height: 1px; background: var(--zm-border); }
 .xm .member-sns-login-sep span { color: var(--zm-text-sub); font-size: 12px; white-space: nowrap; }
 .xm .member-sns-btn { display: block; padding: 11px; margin: 8px 0; text-align: center; text-decoration: none; border-radius: var(--zm-radius); font-weight: 700; font-size: 14px; text-transform: capitalize; }
-/* 각 서비스의 상징색이라 테마를 따르지 않는다 */
 .xm a.member-sns-btn.member-sns-kakao { background: #FEE500 !important; color: #3C1E1E !important; }
 .xm a.member-sns-btn.member-sns-naver { background: #03C75A !important; color: #fff !important; }
 .xm a.member-sns-btn.member-sns-google { background: #fff !important; color: #757575 !important; border: 1px solid #ddd; }
@@ -408,13 +399,10 @@
 .xm .xpress-editor > #smart_content,
 .xm .xpress-editor > #smart_content > .tool { clear: none; }
 .xm .zm-signup-steps span.done { background: var(--zm-brand-soft); color: var(--zm-brand); }
-/* 인증 후에는 약관을 접어서 표시 (체크 상태는 유지) */
 .xm .zm-agreements-collapsed .agreement .text { display: none; }
 .xm .zm-agreements-collapsed .agreement { margin-bottom: 8px; }
-/* 본인인증으로 잠긴 입력 */
 .xm .zm-identity-locked { opacity: .75; pointer-events: none; background: var(--zm-surface) !important; }
 
-/* 보조 버튼(x_btn 등)도 폼 인풋 높이(44px)에 맞춘다 */
 .xm .x_btn, .xm input[type="button"], .xm input[type="reset"], .xm input[type="file"]::file-selector-button {
     min-height: 44px;
     padding: 0 20px;
@@ -424,7 +412,6 @@
     cursor: pointer;
 }
 
-/* 폼 컨트롤 높이 통일: 인풋·셀렉트·버튼 전부 46px 한 줄에 선다 */
 .xm select,
 .xm input[type="text"], .xm input[type="password"], .xm input[type="date"], .xm input[type="datetime-local"],
 .xm input[type="number"], .xm input[type="email"], .xm input[type="url"], .xm input[type="search"], .xm input[type="tel"] {
@@ -439,8 +426,6 @@
     min-height: 46px;
 }
 
-/* 버튼류 최종 통일: .btn 여부와 무관하게 46px 플랫 연회색, hover 포인트색.
- * 삭제·파일 선택처럼 클래스가 제각각인 버튼들이 인풋 옆에서 같은 높이로 선다 */
 .xm button, .xm .x_btn, .xm input[type="button"], .xm input[type="reset"] {
     box-sizing: border-box;
     display: inline-flex;
@@ -478,14 +463,11 @@
     cursor: pointer;
 }
 .xm input[type="file"]::file-selector-button:hover { background: var(--zm-brand); color: #fff; }
-/* 주요 버튼은 위 통일 규칙 위에서 포인트색을 유지한다 */
 .xm .btn-primary, .xm input[type="submit"].btn, .xm button[type="submit"].btn { background: var(--zm-brand); color: #fff; }
 .xm .btn-primary:hover, .xm input[type="submit"].btn:hover, .xm button[type="submit"].btn:hover { background: var(--hr-nav-bg, #1b1914); color: #fff; }
 
-/* 타이틀 아래 숨통: 제목-포인트 바 사이, 바-본문 사이 여백을 넉넉히 */
 .xm h1 { padding-bottom: 22px; margin-bottom: 34px; }
 
-/* 인풋 옆 버튼 세로 정렬: 인풋과 같은 margin-bottom(8px) + middle 정렬로 줄을 맞춘다 */
 .xm select, .xm input[type="text"], .xm input[type="password"], .xm input[type="date"], .xm input[type="datetime-local"],
 .xm input[type="number"], .xm input[type="email"], .xm input[type="url"], .xm input[type="search"], .xm input[type="tel"] { vertical-align: middle; }
 .xm .btn, .xm a.btn, .xm button, .xm .x_btn, .xm input[type="button"], .xm input[type="reset"], .xm input[type="submit"], .xm input[type="file"] {
@@ -494,15 +476,20 @@
 }
 .xm .btnArea .btn, .xm .btnArea button, .xm .signin .btn { margin-bottom: 0; }
 
-/* 타이틀 언더바 아래 여백 확대 */
 .xm h1 { padding-bottom: 22px; margin-bottom: 48px; }
 
-/* 언더바 아래 여백: 어떤 규칙에도 밀리지 않게 최종 고정 */
 .xm h1 { margin-bottom: 48px !important; }
 .xm h1 + div, .xm h1 + form, .xm h1 + p, .xm h1 + section { margin-top: 0; }
 
-/* 검색줄(페이지네이션 폼) 안에서는 여백을 걷어 한 줄 정렬을 맞춘다 */
 .xm .pagination form select, .xm .pagination form input, .xm .pagination form .btn, .xm .pagination form button { margin-bottom: 0; }
 
-.xm .member-sns-btn { width: 100%; max-width: 360px; box-sizing: border-box; }
-.xm .signin .login-body input[type="submit"].submit { max-width: 360px; }
+.xm .signin .login-body input[type="text"], .xm .signin .login-body input[type="password"], .xm .signin .login-body input[type="email"],
+.xm .signin .login-body input[type="submit"].submit, .xm .signin .member-sns-btn {
+    display: flex; align-items: center; justify-content: center; box-sizing: border-box;
+    width: 100%; max-width: none; height: 46px; min-height: 46px; margin-left: 0; margin-right: 0; line-height: 1.4;
+}
+.xm .signin .login-body input[type="text"], .xm .signin .login-body input[type="password"], .xm .signin .login-body input[type="email"] { display: block; padding-top: 0; padding-bottom: 0; }
+.xm .signin .login-body input[type="submit"].submit { display: block; padding: 0 12px; }
+.xm .signin .member-sns-btn { padding: 0 12px; border: 1px solid transparent; }
+.xm .signin a.member-sns-btn.member-sns-google { border-color: #ddd; }
+.xm .signin .login-footer { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 18px; }

@@ -90,7 +90,6 @@ jQuery(function($){
 })(jQuery);
 </script>
 <script cond="!empty($identity_locked)">
-/* 본인인증으로 확인된 필드 잠금 (서버측에서도 강제 유지됨) */
 (function(){
 	function lock(el) { if (el) { el.readOnly = true; el.style.opacity = '.75'; el.style.pointerEvents = 'none'; el.tabIndex = -1; el.style.background = 'rgba(128,128,128,.08)'; } }
 	lock(document.querySelector('#fo_insert_member input[name="user_name"]'));

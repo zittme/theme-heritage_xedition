@@ -23,7 +23,6 @@
 
 	@php $zmk_cat_style = count($kin_category_tree ?? []) ? $kin_category_style : 'none'; @endphp
 
-	{{-- 뱃지 방식: 1차 분야를 알약으로 늘어놓고, 2차 분야는 롤오버로 펼친다 --}}
 	@if ($zmk_cat_style === 'badge')
 	<ul class="zmk-categories">
 		<li class="zmk-cat-item @if (!$kin_category_srl) is-active @endif"><a href="{{ getUrl('', 'mid', $mid, 'act', '', 'category', '', 'page', '') }}">{{ $lang->kin_category_all }}</a></li>
@@ -42,7 +41,6 @@
 	</ul>
 	@endif
 
-	{{-- 그리드 방식: 분야가 많을 때. 1차를 여러 열로 깔고 2차는 롤오버로 펼친다 --}}
 	@if ($zmk_cat_style === 'grid')
 	<div class="zmk-cat-grid">
 		<div class="zmk-cat-cell @if (!$kin_category_srl) is-active @endif"><a href="{{ getUrl('', 'mid', $mid, 'act', '', 'category', '', 'page', '') }}">{{ $lang->kin_category_all }}</a></div>
@@ -61,7 +59,6 @@
 	</div>
 	@endif
 
-	{{-- 사이드바 방식: 왼쪽에 분야 세로 목록, 2차는 들여쓰기로 항상 보인다 --}}
 	@if ($zmk_cat_style === 'sidebar')
 	<div class="zmk-columns">
 		<aside class="zmk-side">

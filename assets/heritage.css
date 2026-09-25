@@ -21,7 +21,6 @@
 	--hr-btn-strong: var(--hr-brand);
 	--hr-btn-strong-hover: var(--hr-brand-dark);
 
-	/* 라운드 없음: 모든 구획은 직사각 */
 	--hr-radius: 0;
 	--hr-radius-sm: 0;
 	--hr-radius-btn: 0;
@@ -31,12 +30,10 @@
 	--hr-w: 1440px;
 	--hr-font: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont,
 		'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
-	/* 제목·로고용 디스플레이 폰트. 영문만 Raleway, 한글은 본문 폰트로 폴백 */
 	--hr-font-display: 'Raleway', 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont,
 		'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
 }
 
-/* 다크 팔레트: 웜 차콜 */
 [data-theme="dark"] {
 	--hr-brand-soft: rgba(205, 162, 90, .2);
 	--hr-ink: #ece9e2;
@@ -60,8 +57,6 @@
 	overflow-wrap: break-word;
 }
 
-/* 스크롤바. 파이어폭스는 두 값만 받고, 나머지는 아래 webkit 규칙이 맡는다.
- * 점 색은 layout.html 이 :root 에 심는다. 감싸는 요소에만 있으면 창 스크롤바까지 닿지 않는다 */
 html, .hr *, .hr-mobile * {
 	scrollbar-width: thin;
 	scrollbar-color: color-mix(in srgb, var(--hr-brand) 55%, transparent) transparent;
@@ -87,7 +82,6 @@ html, .hr *, .hr-mobile * {
 
 
 .hr-inner { width: 100%; max-width: var(--hr-w); margin: 0 auto; padding: 0; box-sizing: border-box; }
-/* 와이드 그리드: 뷰포트가 본문 폭보다 좁아지면 좌우 여백을 확보한다 */
 @media (max-width: 1600px) {
 	.hr-inner { padding: 0 clamp(14px, 3vw, 28px); }
 }
@@ -186,7 +180,6 @@ html, .hr *, .hr-mobile * {
 .hr textarea { resize: vertical; line-height: 1.7; }
 .hr-field-hint { margin: 0; font-size: 12.5px; color: var(--hr-muted); }
 .hr-check { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; }
-/* 체크박스·라디오·프로그레스 등 네이티브 위젯도 포인트색을 따른다 */
 .hr input[type="checkbox"], .hr input[type="radio"],
 .hr input[type="range"], .hr progress { accent-color: var(--hr-brand); }
 

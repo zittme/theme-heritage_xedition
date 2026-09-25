@@ -28,7 +28,6 @@
 			<button type="button" class="shp-btn shp-btn-primary shp-btn-sm" onclick="var f=document.getElementById('shpRvForm{{ $shp_unrv_srl }}'); f.style.display=f.style.display==='none'?'grid':'none';">{{ sprintf($lang->shop_write_review_for, $shp_unrv_name) }}</button>
 			@endforeach
 		</div>
-		{{-- 상품 상세로 보내지 않고 이 자리에서 바로 등록한다 --}}
 		@foreach ($shp_unrv as $shp_unrv_srl => $shp_unrv_name)
 		<form action="{{ getUrl('') }}" method="post" id="shpRvForm{{ $shp_unrv_srl }}" style="display:none;margin-top:12px;gap:8px">
 			<input type="hidden" name="act" value="procCommerceReviewInsert" />
@@ -136,7 +135,7 @@
 		<tbody>
 			@foreach ($order_items as $oi)
 			<tr>
-				<td>{{ $oi->item_name }}@if (!empty($oi->option_name))<br /><small class="shp-sub-text">{{ $oi->option_name }}</small>@endif</td>
+				<td>{{ $oi->item_name }}@if (!empty($oi->option_name))<br /><small class="shp-sub-text">{{ $oi->option_name }}</small>@endif @if (function_exists('shop_pin_block')){!! shop_pin_block($order, $oi) !!}@endif</td>
 				<td>{{ $oi->qty }}</td>
 				<td>{{ shop_money_in($oi->subtotal, $order->currency ?? 'KRW') }}</td>
 			</tr>
@@ -144,11 +143,36 @@
 		</tbody>
 	</table>
 
+	@php
+	$shp_multi_seller = count($order_sellers) > 1;
+	$shp_tk_shown = false;
+	@endphp
+	@if ($shp_multi_seller)
+	<div class="shp-summary shp-bundles">
+		@foreach ($order_sellers as $shp_bos)
+		@php
+		$shp_bst = (string)($shp_bos->status ?? '');
+		$shp_bst_key = $shp_bst === 'refunded' ? 'st_sel_refunded' : 'shop_status_' . $shp_bst;
+		$shp_bst_label = lang('commerce.' . $shp_bst_key);
+		@endphp
+		<div class="shp-summary-row">
+			<span>{{ $shp_bos->shop_label ?? '' }}</span>
+			<span class="shp-bundle-state">
+				<span class="shp-st shp-st-{{ $shp_bst }}">{{ $shp_bst_label }}</span>
+				@if (!empty($shp_bos->shipping_invoice))<small>{{ $shp_bos->shipping_company }} {{ $shp_bos->shipping_invoice }}</small>@endif
+				@if (!empty($shp_bos->tracking_url))<a href="{{ $shp_bos->tracking_url }}" target="_blank" rel="noopener">{{ $lang->shop_track_link }}</a>@endif
+			</span>
+		</div>
+		@endforeach
+	</div>
+	@endif
+
 	@foreach ($order_sellers as $os)
-	@if (!empty($os->shipping_invoice))
+	@if (!empty($os->shipping_invoice) && (!$shp_multi_seller || !$shp_tk_shown))
 	@php
 	$shp_tk = Context::get('tracking_info');
 	$shp_tk_details = ($shp_tk && is_array($shp_tk->details ?? null)) ? array_reverse($shp_tk->details) : [];
+	$shp_tk_shown = true;
 	@endphp
 	<div class="shp-track">
 		@if ($shp_tk)
@@ -157,7 +181,7 @@
 			@if (count($shp_tk_details))<span>{{ $shp_tk_details[0]['time'] ?? '' }}</span>@endif
 		</div>
 		@endif
-		<div class="shp-summary-row"><span>{{ $lang->shop_shipping_info }}</span><span>{{ $os->shipping_company }} <strong>{{ $os->shipping_invoice }}</strong></span></div>
+		<div class="shp-summary-row"><span>{{ $lang->shop_shipping_info }}@if ($shp_multi_seller && !empty($os->shop_label)) · {{ $os->shop_label }}@endif</span><span>{{ $os->shipping_company }} <strong>{{ $os->shipping_invoice }}</strong></span></div>
 		@if (count($shp_tk_details))
 		<ol class="shp-track-list">
 			@foreach ($shp_tk_details as $shp_ti => $shp_td)
@@ -201,7 +225,10 @@
 	elseif ($shp_ds === 'preparing') { $shp_claim_type = 'cancel'; $shp_claim_label = $lang->shop_request_cancel; }
 	elseif ($shp_ds === 'shipping' || $shp_ds === 'delivered') { $shp_claim_type = 'return'; $shp_claim_label = $lang->shop_request_return; }
 	@endphp
-	@if ($shp_claim_type !== '')
+	@php $shp_claimable = $claimable_sellers ?? []; @endphp
+	@if (($claim_blocked_reason ?? '') !== '' && ($shp_claim_type !== '' || $shp_ds === 'confirmed'))
+	<p class="shp-claim-blocked">{{ $claim_blocked_reason }}</p>
+	@elseif ($shp_claim_type !== '')
 	<form action="{{ getUrl('') }}" method="post" style="margin-top:8px" onsubmit="return confirm('{{ $lang->shop_claim_confirm }}')">
 		<input type="hidden" name="act" value="procCommerceClaim" />
 		<input type="hidden" name="mid" value="{{ $mid }}" />
@@ -209,6 +236,20 @@
 		<input type="hidden" name="claim_type" value="{{ $shp_claim_type }}" />
 		@if ($order->member_srl == 0)
 		<input type="hidden" name="guest_password" value="{{ escape(Context::get('gp')) }}" />
+		@endif
+		@if ($order->status === 'paid' && count($shp_claimable) > 1)
+		<div class="shp-row">
+			<label>{{ $lang->sc_claim_bundle }}</label>
+			<select name="order_seller_srl" required>
+				@foreach ($shp_claimable as $shp_cos)
+				<option value="{{ $shp_cos->order_seller_srl }}">{{ $shp_cos->shop_label }}</option>
+				@endforeach
+			</select>
+		</div>
+		@elseif ($order->status === 'paid' && count($shp_claimable) === 1)
+		@foreach ($shp_claimable as $shp_cos)
+		<input type="hidden" name="order_seller_srl" value="{{ $shp_cos->order_seller_srl }}" />
+		@endforeach
 		@endif
 		<div class="shp-row">
 			<label>{{ $lang->shop_claim_reason }}</label>

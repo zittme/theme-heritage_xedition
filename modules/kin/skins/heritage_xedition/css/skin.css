@@ -1,7 +1,3 @@
-/* 지식질문 - 헤리티지 스킨.
-   레이아웃(heritage)의 hr 토큰을 따르고, 레이아웃 밖에서는 폴백을 쓴다.
-   다크는 hr 토큰이 테마에서 함께 바뀌므로 스킨이 따로 정의하지 않는다. */
-
 .zmk {
 	--zmk-brand: var(--hr-brand, #cda25a);
 	--zmk-brand-hover: var(--hr-brand, #b3873f);
@@ -33,8 +29,6 @@
 .zmk a { text-decoration: none; color: inherit; }
 .zmk a:hover { text-decoration: underline; }
 
-/* 버튼 — a 태그로도 쓰이므로 레이아웃의 링크·방문 링크 색을 물려받지 않게
-   link/visited/hover 상태를 전부 못박는다 */
 .zmk .zmk-btn, .zmk a.zmk-btn, .zmk a.zmk-btn:visited { display: inline-block; padding: 7px 14px; border: 1px solid var(--zmk-border); border-radius: 0; background: var(--zmk-bg); color: var(--zmk-text); font-size: 15px; font-weight: 500; cursor: pointer; line-height: 1.4; text-decoration: none; transition: background-color .15s, color .15s, border-color .15s; }
 .zmk .zmk-btn:hover, .zmk a.zmk-btn:hover { background: var(--zmk-surface); color: var(--zmk-text); text-decoration: none; }
 .zmk .zmk-btn-sm { padding: 4px 10px; font-size: 14px; }
@@ -48,33 +42,28 @@
 .zmk-link-btn:hover { text-decoration: underline; }
 .zmk-inline-form { display: inline-flex; gap: 4px; align-items: center; }
 
-/* 페이지 머리글 — 목록과 폼 화면이 함께 쓴다. 구분선으로 아래 내용과 띄운다 */
 .zmk-page-head { margin: 0 0 24px; padding-bottom: 14px; border-bottom: 1px solid var(--zmk-border); }
 .zmk-page-title { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -.01em; }
 .zmk-page-desc { margin: 8px 0 0; color: var(--zmk-text-sub); font-size: 14.5px; }
 
-/* 목록 */
 .zmk-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 12px; flex-wrap: wrap; }
 .zmk-tabs { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; }
 .zmk-tabs li a { display: inline-block; padding: 7px 14px; border-radius: 0; font-size: 15px; color: var(--zmk-text-sub); }
 .zmk-tabs li.is-active a { background: var(--zmk-brand); color: #fff; }
 .zmk-tabs li a b { font-weight: 600; }
 
-/* 분야 - 뱃지 방식. 2차 분야는 롤오버 드롭다운 */
 .zmk ul.zmk-categories { display: flex; gap: 6px; flex-wrap: wrap; list-style: none; margin: 4px 0 28px; padding: 0; }
 .zmk-cat-item { position: relative; }
 .zmk-cat-item > a { display: inline-block; padding: 5px 13px; border: 1px solid var(--zmk-border); border-radius: 0; font-size: 13px; color: var(--zmk-text-sub); background: var(--zmk-surface); }
 .zmk-cat-item > a:hover { text-decoration: none; color: var(--zmk-brand); border-color: var(--zmk-brand); }
 .zmk-cat-item.is-active > a { background: var(--zmk-brand-soft); border-color: var(--zmk-brand); color: var(--zmk-brand); }
 
-/* 2차 분야 드롭다운 - 뱃지·그리드 공용 */
 .zmk-cat-drop { display: none; position: absolute; top: 100%; left: 0; z-index: 30; min-width: 140px; margin: 0; padding: 6px 0; list-style: none; background: var(--zmk-bg); border: 1px solid var(--zmk-border); border-radius: 0; box-shadow: 0 6px 18px rgba(0, 0, 0, .1); }
 .zmk-cat-item.has-children:hover .zmk-cat-drop, .zmk-cat-cell.has-children:hover .zmk-cat-drop { display: block; }
 .zmk-cat-drop li a { display: block; padding: 7px 14px; font-size: 13px; color: var(--zmk-text); white-space: nowrap; }
 .zmk-cat-drop li a:hover { background: var(--zmk-brand-soft); color: var(--zmk-brand); text-decoration: none; }
 .zmk-cat-drop li.is-active a { color: var(--zmk-brand); font-weight: 600; }
 
-/* 분야 - 그리드 방식. 분야가 많을 때 여러 열로 깐다 */
 .zmk .zmk-cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1px; margin: 4px 0 28px; border: 1px solid var(--zmk-border); border-radius: 0; overflow: visible; background: var(--zmk-border); }
 .zmk-cat-cell { position: relative; background: var(--zmk-bg); }
 .zmk-cat-cell > a { display: block; padding: 10px 14px; font-size: 14px; color: var(--zmk-text); }
@@ -82,7 +71,6 @@
 .zmk-cat-cell.is-active > a { color: var(--zmk-brand); font-weight: 700; background: var(--zmk-brand-soft); }
 .zmk-cat-cell:first-child { border-radius: 0; }
 
-/* 분야 - 사이드바 방식 */
 .zmk-columns { display: flex; align-items: flex-start; gap: 28px; }
 .zmk-side { flex: 0 0 180px; }
 .zmk-main { flex: 1 1 auto; min-width: 0; }
@@ -122,7 +110,6 @@
 .zmk-search { display: flex; justify-content: center; gap: 6px; margin: 16px 0; }
 .zmk-search select, .zmk-search input[type=text] { padding: 6px 10px; border: 1px solid var(--zmk-border); border-radius: 0; font-size: 15px; background: var(--zmk-bg); color: var(--zmk-text); }
 
-/* 열람 */
 .zmk-view-head { border-bottom: 1px solid var(--zmk-border); padding-bottom: 14px; margin-bottom: 18px; }
 .zmk-view-head .zmk-profile-card { margin: 12px 0 10px; }
 .zmk-view-top { display: flex; gap: 6px; align-items: center; margin-bottom: 8px; }
@@ -144,7 +131,6 @@
 .zmk-section-title { font-size: 18px; margin: 0 0 12px; }
 .zmk-section-title b { color: var(--zmk-brand); }
 
-/* 프로필 카드 */
 .zmk-profile-card { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; margin-bottom: 12px; border: 1px solid var(--zmk-border); border-radius: 0; background: var(--zmk-surface); }
 .zmk-profile { display: inline-flex; align-items: center; gap: 12px; min-width: 0; }
 .zmk-profile:hover { text-decoration: none; }
@@ -158,7 +144,6 @@
 .zmk-profile-stats { font-size: 14px; color: var(--zmk-text-sub); }
 .zmk-profile-stats b { color: var(--zmk-brand); font-weight: 600; }
 
-/* 활동 내역 */
 .zmk-user-head { display: flex; align-items: center; gap: 14px; }
 .zmk-user-head-body { min-width: 0; }
 .zmk-user-list { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--zmk-line-strong); }
@@ -168,7 +153,6 @@
 .zmk-user-item-excerpt { margin: 6px 0 0; font-size: 14px; color: var(--zmk-text-sub); }
 .zmk-user-item-meta { display: flex; gap: 10px; margin-top: 6px; font-size: 13px; color: var(--zmk-text-sub); }
 
-/* 답변 */
 .zmk-answers { margin-top: 30px; }
 .zmk-answers-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
 .zmk-answers-head .zmk-section-title { margin: 0; }
@@ -181,7 +165,6 @@
 .zmk-answer-cmts { border-top: 1px solid var(--zmk-border); margin-top: 10px; padding-top: 4px; }
 .zmk-answer-quote { display: flex; gap: 8px; align-items: center; border: 1px solid var(--zmk-border); border-radius: 0; background: var(--zmk-surface); padding: 10px 14px; margin-bottom: 16px; font-size: 14px; }
 
-/* 댓글 */
 .zmk-qcmt { margin-bottom: 8px; border: 1px solid var(--zmk-border); border-radius: 0; background: var(--zmk-surface); padding: 14px 18px 12px; }
 .zmk-qcmt-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
 .zmk-qcmt-head .zmk-section-title { margin: 0; font-size: 16px; }
@@ -193,16 +176,13 @@
 .zmk-cmt { border-top: 1px solid var(--zmk-border); padding: 10px 0; }
 .zmk-cmt-reply { margin-left: 24px; border-top: 1px dashed var(--zmk-border); }
 .zmk-cmt-head { display: flex; gap: 10px; align-items: center; font-size: 14px; color: var(--zmk-text-sub); margin-bottom: 4px; }
-/* 수정 링크와 삭제 버튼(폼)이 한 줄에 섞인다. 기준선과 글자 크기를 통일한다 */
 .zmk-cmt-tools { margin-left: auto; display: inline-flex; gap: 8px; align-items: center; font-size: 12px; line-height: 1.4; }
 .zmk-cmt-tools a, .zmk-cmt-tools .zmk-link-btn { font-size: 12px; color: var(--zmk-text-sub); line-height: 1.4; }
 .zmk-cmt-tools form { display: inline-flex; align-items: center; margin: 0; }
-/* 본문 계열(질문·답변·댓글 내용)은 스킨이 크기를 정하지 않는다. 에디터 설정을 따른다 */
 .zmk-cmt-form { display: flex; gap: 6px; margin-top: 10px; align-items: flex-start; }
 .zmk-cmt-form textarea { flex: 1; padding: 8px 10px; border: 1px solid var(--zmk-border); border-radius: 0; font-size: 15px; resize: vertical; background: var(--zmk-bg); color: var(--zmk-text); }
 .zmk-cmt-form textarea:focus { border-color: var(--zmk-brand); outline: none; }
 
-/* 작성 폼 */
 .zmk-write-form .zmk-field { margin-bottom: 16px; }
 .zmk-write-form label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 15px; }
 .zmk-title-input { width: 100%; padding: 9px 12px; border: 1px solid var(--zmk-border); border-radius: 0; font-size: 16px; box-sizing: border-box; background: var(--zmk-bg); color: var(--zmk-text); }
@@ -212,7 +192,6 @@
 .zmk-help { font-size: 13px; color: var(--zmk-text-sub); margin: 6px 0 0; }
 .zmk-form-foot { display: flex; justify-content: flex-end; gap: 6px; margin-top: 16px; }
 
-/* 삭제 확인 */
 .zmk-delete-box { border: 1px solid var(--zmk-border); border-radius: 0; padding: 20px; background: var(--zmk-bg); }
 .zmk-delete-title { font-weight: 600; margin: 0 0 10px; }
 
@@ -221,7 +200,6 @@
 	.zmk-view-title { font-size: 20px; }
 }
 
-/* 헤리티지 보정 - 각진 모서리와 테마 버튼 질감 */
 .zmk .zmk-btn, .zmk a.zmk-btn, .zmk a.zmk-btn:visited { border-radius: var(--zmk-radius-btn); }
 .zmk .zmk-btn-primary, .zmk a.zmk-btn-primary, .zmk a.zmk-btn-primary:visited { background: var(--zmk-brand); transition: filter .15s; }
 .zmk .zmk-btn-primary:hover, .zmk a.zmk-btn-primary:hover { background: var(--zmk-brand); filter: brightness(1.07); }

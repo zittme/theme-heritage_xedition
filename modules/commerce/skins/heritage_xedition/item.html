@@ -24,6 +24,13 @@
 	$shp_has_basic = count($shp_basic_opts) > 0;
 	@endphp
 
+	@if (!empty($zmc_store_frame))
+	<nav class="shp-breadcrumb">
+		<a href="{{ $zmc_store_frame->url }}">{{ $zmc_store_frame->shop_name }}</a>
+		<span class="shp-bc-sep">&gt;</span>
+		<a href="{{ $zmc_store_frame->all_url }}">{{ $lang->shop_all_items }}</a>
+	</nav>
+	@else
 	<nav class="shp-breadcrumb">
 		<a href="{{ getUrl('', 'mid', $mid, 'v', 'list') }}">{{ $lang->shop_all }}</a>
 		@foreach ($breadcrumb ?? [] as $bc)
@@ -31,8 +38,12 @@
 		<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceList', 'category', $bc->category_srl) }}">{{ $bc->title }}</a>
 		@endforeach
 	</nav>
+	@endif
 
 	@php $shp_sticky = (($shop_config->item_sticky ?? 'N') === 'Y'); @endphp
+	@if (!empty($item_seller))
+	<p class="shp-seller-line">{{ $lang->mk_seller }} <a href="{{ $item_seller->store_url ?? getUrl('', 'mid', $mid, 'v', 'list', 'seller', $item_seller->seller_srl) }}">{{ $item_seller->shop_name }}</a></p>
+	@endif
 	<div class="shp-detail" id="shpDetailTop">
 		<div class="shp-gallery">
 			<div class="shp-detail-thumb" id="shpGalleryMain" style="{{ $shp_thumb_style }}"></div>
@@ -81,6 +92,22 @@
 			<div class="shp-guide-body">{!! $shp_claim_guide_html !!}</div>
 		</details>
 		@endif
+	</div>
+	@endif
+
+	@if (!empty($item_seller))
+	<div class="shp-section shp-seller-info">
+		<h2>{{ $lang->mk_seller_info }}</h2>
+		<dl>
+			<div><dt>{{ $lang->mk_f_biz_name }}</dt><dd>{{ $item_seller->biz_name ?: $item_seller->shop_name }}</dd></div>
+			<div><dt>{{ $lang->mk_f_ceo_name }}</dt><dd>{{ $item_seller->ceo_name }}</dd></div>
+			<div><dt>{{ $lang->mk_f_biz_no }}</dt><dd>{{ $item_seller->biz_no }}</dd></div>
+			<div><dt>{{ $lang->mk_f_mailorder_no }}</dt><dd>{{ $item_seller->mailorder_no }}</dd></div>
+			<div><dt>{{ $lang->mk_f_tel }}</dt><dd>{{ $item_seller->tel }}</dd></div>
+			@if ($item_seller->email !== '')<div><dt>{{ $lang->mk_f_email }}</dt><dd>{{ $item_seller->email }}</dd></div>@endif
+			@if ($item_seller->biz_address !== '')<div><dt>{{ $lang->mk_f_biz_address }}</dt><dd>{{ $item_seller->biz_address }}</dd></div>@endif
+		</dl>
+		<p class="shp-seller-note">{{ sprintf($lang->mk_intermediary_note, $shop_config->biz_name ?: (Context::getSiteTitle() ?: parse_url(Context::getDefaultUrl(), PHP_URL_HOST))) }}</p>
 	</div>
 	@endif
 
@@ -281,7 +308,7 @@
 	@endif
 	</div>
 	<p class="shp-foot-links">
-		<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceList') }}">{{ $lang->shop_back_list }}</a>
+		<a href="{{ !empty($zmc_store_frame) ? $zmc_store_frame->all_url : getUrl('', 'mid', $mid, 'act', 'dispCommerceList') }}">{{ $lang->shop_back_list }}</a>
 		<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceCart') }}">{{ $lang->shop_cart }}</a>
 	</p>
 
@@ -332,19 +359,15 @@
 		var totalQtyEl = document.getElementById('shpTotalQty');
 		var totalEl = document.getElementById('shpTotalPrice');
 		var optSels = document.querySelectorAll('.shp-opt-add');
-		// 조합형이면 본품 대신 고른 조합이 줄로 쌓인다
 		var comboMode = document.querySelectorAll('.shp-axis').length > 0;
-		// 조합형 옵션: 축을 모두 고르면 그 조합에 해당하는 기본 옵션이 골라진다
 		var axisSels = document.querySelectorAll('.shp-axis');
 		if (axisSels.length) {
 			var basicSel = document.querySelector('.shp-opt-add[data-opt-type="basic"]');
 			var axesWrap = document.querySelector('.shp-axes');
 			if (basicSel && axesWrap) {
-				// 축으로 고르므로 원래 셀렉트는 감춘다 (값 전달용으로만 남긴다)
 				var basicRow = basicSel.closest('.shp-row');
 				if (basicRow) basicRow.style.display = 'none';
 
-				// 조합 -> option 요소 지도
 				// 열쇠는 축·값의 자리 번호다. 표시 글자는 언어마다 달라지므로 대조에 쓰지 않는다
 				var comboMap = {};
 				Array.prototype.forEach.call(basicSel.options, function (op) {
@@ -352,7 +375,6 @@
 					if (key) comboMap[key] = op;
 				});
 
-				// 값 하나가 들어간 조합이 모두 품절이면 그 값은 고를 수 없다
 				function soldout(axisIndex, valueIndex) {
 					var want = axisIndex + '=' + valueIndex;
 					var any = false;
@@ -364,7 +386,6 @@
 					return any;
 				}
 
-				// 자리 번호로 고른 값의 표시 글자를 찾는다
 				function labelOf(row, index) {
 					var chip = row.querySelector('[data-chip="' + index + '"]');
 					if (chip) return chip.getAttribute('data-label') || '';
@@ -445,7 +466,6 @@
 		}
 
 		var shpUnit = '{{ $shp_unit_label }}';
-		{{-- 서버가 이미 표시 통화 값으로 내려보낸다. 여기서 환율을 다시 곱하면 어긋난다 --}}
 		var shpZero = {{ $shp_currency_zero ? 'true' : 'false' }};
 		var shpDisp = '{{ $shp_currency }}';
 		var shpDispZero = {{ $shp_currency_zero ? 'true' : 'false' }};
@@ -453,15 +473,12 @@
 		var shpWon = {{ $shp_won_suffix ? 'true' : 'false' }};
 		var shpDispRate = 1;
 		function fmt(n) { return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
-		// 금액은 기준 통화 최소단위 정수. 표시 통화로 환산해 서버 표기와 같은 모양으로 맞춘다: 12,000원 / MXN 89.00
 		function smoney(minor) {
 			var major = (shpZero ? minor : minor / 100) / shpDispRate;
-			// KRW 는 한국어 화면에서만 접미사 '원' 을 쓴다 (서버 표기와 맞춘다)
 			if (shpDisp === 'KRW' && shpWon) return fmt(Math.round(major)) + {!! json_encode($shp_unit_label) !!};
 			var pre = shpDispSym || (shpDisp + ' ');
 			if (shpDispZero) return pre + fmt(Math.round(major));
 			var cents = Math.round(major * 100);
-			// 상품 진열은 소수점 끝이 0 이면 뗀다 (서버 표기와 맞춘다)
 			if (cents % 100 === 0) return pre + fmt(cents / 100);
 			return pre + fmt(Math.floor(cents / 100)) + '.' + ('0' + (cents % 100)).slice(-2);
 		}
@@ -562,7 +579,6 @@
 				} else if (srl === '0') {
 					setMainRow('0', itemName, basePrice);
 				} else if (comboMode) {
-					// 조합형: 본품을 미리 담지 않고, 고른 조합을 한 줄씩 쌓는다
 					var already = rowsEl.querySelector('.shp-select-row[data-opt="' + srl + '"]');
 					if (already) {
 						var qtyEl = already.querySelector('.shp-qty');
@@ -578,7 +594,6 @@
 			});
 		});
 
-		// 조합형은 고르기 전까지 아무것도 담지 않는다
 		if (!baseSoldout && !comboMode) {
 			setMainRow('0', itemName, basePrice);
 		}

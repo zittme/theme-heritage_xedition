@@ -1,6 +1,12 @@
 @version(2)
-<!-- 한 줄 헤더(화면 전체 폭): 로고 + GNB(로고 옆 또는 중앙, gnb_align) + 우측 유틸 -->
 <header class="hr-header" id="hr_header">
+@php
+$hr_seller_center = '';
+if ($is_logged && class_exists('\Zittme\Modules\Commerce\Models\Seller') && method_exists('\Zittme\Modules\Commerce\Models\Seller', 'current') && \Zittme\Modules\Commerce\Models\Seller::current())
+{
+	$hr_seller_center = getUrl('', 'mid', '', 'act', 'dispCommerceSellerCenter');
+}
+@endphp
 
 	<div class="hr-utilrow">
 		<div class="hr-utilrow-inner g-{{ $hr->gnb_align ?? 'left' }}">
@@ -41,10 +47,8 @@
 				</ul>
 			</nav>
 
-			{{-- 우측 유틸: 다크모드 · 검색 · 언어(축약 코드) · 프로필 영역(포인트색 박스) 순 --}}
 			<div class="hr-utils">
 				@php
-				// 알림센터(ncenterlite) 헤더 연동: 기본 플로팅 위젯은 끄고 프로필 영역 안에 벨을 그린다
 				$hr_nc_items = [];
 				$hr_nc_unread = 0;
 				$hr_nc_on = false;
@@ -72,7 +76,6 @@
 				</button>
 				@endif
 
-				{{-- 언어 전환: 축약 코드(KR/EN)로 표시. 코어에서 켜 둔 언어가 둘 이상일 때만 나온다 --}}
 				@php
 				$hr_langs = \Context::get('lang_supported');
 				$hr_langs = is_array($hr_langs) ? $hr_langs : [];
@@ -84,7 +87,6 @@
 						$hr_lang_short[$hr_lc] = strtoupper(substr($hr_lc, 0, 2));
 					}
 				}
-				// 보던 주소를 그대로 두고 l 값만 갈아 끼운다.
 				// getUrl() 은 재작성된 주소(/notice/123)를 복원하지 못해 대문으로 떨어진다.
 				$hr_lang_uri = (string)($_SERVER['REQUEST_URI'] ?? '/');
 				$hr_lang_uri = preg_replace('/([?&])l=[^&]*/', '$1', $hr_lang_uri);
@@ -105,7 +107,12 @@
 				</div>
 				@endif
 
-				{{-- 프로필 영역: 포인트색 박스에 사진+닉네임+알림 벨. 올리면 하위 메뉴(관리자 링크 포함) --}}
+				@if ($hr_seller_center !== '')
+				<a class="hr-iconbtn hr-seller-btn" href="{{ $hr_seller_center }}" target="_blank" title="{{ lang('commerce.sc_title') }}" aria-label="{{ lang('commerce.sc_title') }}">
+					<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16l1.5 5a3 3 0 0 1-5 2.2 3 3 0 0 1-5 0 3 3 0 0 1-5 0A3 3 0 0 1 2.5 9zm1 9.6a4.9 4.9 0 0 0 1 .1V20h4v-4h4v4h4v-6.3a4.9 4.9 0 0 0 1-.1V22H5z"/></svg>
+				</a>
+				@endif
+
 				<div class="hr-me">
 					@if ($is_logged)
 					<a class="hr-me-btn" href="{{ getUrl('', 'act', 'dispMemberInfo') }}" aria-haspopup="true">
@@ -143,6 +150,9 @@
 						@if ($logged_info->is_admin == 'Y')
 						<li><a href="{{ getUrl('', 'module', 'admin') }}" target="_blank">{{ $lang->hr_admin_page }}</a></li>
 						@endif
+						@if ($hr_seller_center !== '')
+						<li><a href="{{ $hr_seller_center }}" target="_blank">{{ lang('commerce.sc_title') }}</a></li>
+						@endif
 						<li><a href="{{ getUrl('', 'act', 'dispMemberLogout') }}">{{ $lang->hr_logout }}</a></li>
 					</ul>
 					@else
@@ -162,7 +172,6 @@
 				</button>
 			</div>
 
-			{{-- 검색 아이콘을 누르면 헤더 위로 대형 검색 오버레이가 열린다 --}}
 			@if ($hr->use_search !== 'N')
 			<form class="hr-searchbar" id="hr_searchbar" action="{{ getUrl() }}" method="get" role="search" hidden>
 				<input type="hidden" name="act" value="IS" />
@@ -187,6 +196,7 @@
 		<div class="hr-mobile-account">
 			@if ($is_logged)
 			<a class="hr-mobile-account-btn" href="{{ getUrl('', 'act', 'dispMemberInfo') }}">{{ $logged_info->nick_name }}</a>
+			@if ($hr_seller_center !== '')<a class="hr-mobile-account-btn" href="{{ $hr_seller_center }}" target="_blank">{{ lang('commerce.sc_title') }}</a>@endif
 			<a class="hr-mobile-account-btn" href="{{ getUrl('', 'act', 'dispMemberLogout') }}">{{ $lang->hr_logout }}</a>
 			@else
 			<a class="hr-mobile-account-btn is-primary" href="{{ getUrl('', 'act', 'dispMemberLoginForm') }}">{{ $lang->hr_login }}</a>
@@ -221,7 +231,6 @@
 			@endforeach
 		</ul>
 
-		{{-- 좁은 화면에서는 헤더에 로고가 설 자리가 없다. 관리자·언어·밝기를 여기로 모은다 --}}
 		<div class="hr-mobile-tools">
 			@if ($is_logged && $logged_info->is_admin == 'Y')
 			<a class="hr-mobile-tool" href="{{ getUrl('', 'module', 'admin') }}" target="_blank">

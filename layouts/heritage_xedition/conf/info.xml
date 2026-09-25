@@ -123,11 +123,18 @@
 					<var name="text" type="textarea"><title xml:lang="ko">설명</title><title xml:lang="en">Description</title></var>
 					<var name="link_text" type="text"><title xml:lang="ko">버튼 이름</title><title xml:lang="en">Button label</title></var>
 					<var name="link_url" type="text"><title xml:lang="ko">버튼 링크</title><title xml:lang="en">Button link</title></var>
+					<var name="link_target" type="select" default="_self">
+						<title xml:lang="ko">버튼 링크 열기</title>
+						<title xml:lang="en">Button link target</title>
+						<options value="_self"><title xml:lang="ko">현재 창</title><title xml:lang="en">Same window</title></options>
+						<options value="_blank"><title xml:lang="ko">새 창</title><title xml:lang="en">New window</title></options>
+					</var>
 					<var name="align" type="select" default="center">
 						<title xml:lang="ko">문구 정렬</title>
 						<title xml:lang="en">Text align</title>
 						<options value="left"><title xml:lang="ko">왼쪽</title><title xml:lang="en">Left</title></options>
 						<options value="center"><title xml:lang="ko">가운데</title><title xml:lang="en">Center</title></options>
+						<options value="right"><title xml:lang="ko">오른쪽</title><title xml:lang="en">Right</title></options>
 					</var>
 				</item>
 			</var>

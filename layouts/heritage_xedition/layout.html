@@ -5,7 +5,6 @@
 @load('js/layout.js')
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
-{{-- 영문 제목용 Raleway (한글은 Pretendard 로 폴백) --}}
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@500;600;700;800&display=swap" />
@@ -24,7 +23,6 @@ foreach ($hr_menu as $hr_m) {
 }
 $hr_type = $hr->layout_type ?? 'sub';
 
-// 뒤에 x 가 붙은 토큰(slx/sfx)은 같은 유형에서 서브 타이틀 밴드만 뺀다
 $hr_class_map = ['m' => 'main', 'sl' => 'sub', 'sf' => 'sub_full', 'slx' => 'sub', 'sfx' => 'sub_full'];
 $hr_no_subhead = false;
 $hr_selected_class = '';
@@ -55,8 +53,6 @@ foreach (preg_split('/\s+/', trim($hr_selected_class)) as $hr_token) {
 $hr_module_info = \Context::get('current_module_info');
 $hr_module_now = is_object($hr_module_info) ? (string)($hr_module_info->module ?? '') : '';
 
-// 사이트 대문은 메뉴 클래스 지정이 없으면 메인(비주얼)으로 본다.
-// 대문에 sl/sf 클래스를 넣으면 그 지정이 우선한다.
 $hr_site_info = \Context::get('site_module_info');
 $hr_home_mid = is_object($hr_site_info) ? (string)($hr_site_info->mid ?? '') : '';
 $hr_now_mid = is_object($hr_module_info) ? (string)($hr_module_info->mid ?? '') : '';
@@ -70,7 +66,8 @@ if (!$hr_has_class_type && in_array($hr_module_now, $hr_full_modules, true)) {
 }
 $hr_lnb = ($hr_type === 'sub' && $hr_current && !empty($hr_current['list'])) ? $hr_current : null;
 
-$hr_visuals = array_map(function($hr_nv) { return is_array($hr_nv) ? $hr_nv : (array)$hr_nv; }, array_values((array)($hr->visuals ?? [])));
+$hr_visuals_all = array_values((array)($hr->visuals ?? []));
+$hr_visuals = array_map(function($hr_nv) { return is_array($hr_nv) ? $hr_nv : (array)$hr_nv; }, LayoutModel::getVisibleItems($hr_visuals_all));
 $hr_visual_mode = $hr->show_visual ?? 'main';
 $hr_show_visual = count($hr_visuals) && $hr_visual_mode !== 'none'
 	&& ($hr_visual_mode === 'all' || $hr_type === 'main');
@@ -105,8 +102,6 @@ $hr_footer_info = array_values(array_filter(array_map('trim', explode("\n", (str
 		? (saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'))
 		: fixed;
 	document.documentElement.setAttribute('data-theme', theme);
-	// 코어(detectColorScheme)와 코어 스킨들은 body 클래스를 본다. 여기서 알려 주지 않으면
-	// 코어가 기기 설정을 따로 읽어, 레이아웃은 밝은데 그 조각만 어두워진다
 	var mark = function () {
 		if (!document.body) { return; }
 		document.body.classList.remove('color_scheme_light', 'color_scheme_dark');
@@ -117,7 +112,6 @@ $hr_footer_info = array_values(array_filter(array_map('trim', explode("\n", (str
 })();
 </script>
 
-{{-- 창 스크롤바는 html 이 그린다. 점 색이 감싸는 요소에만 있으면 거기까지 닿지 않는다 --}}
 <style>:root { --hr-brand: {{ $hr_point }}; }</style>
 
 <div class="hr hr-layout t-{{ $hr_type }} n-{{ $hr->gnb_color ?? 'dark' }} mtp-{{ $hr->mobile_theme_pos ?? 'drawer' }} mlp-{{ $hr->mobile_lang_pos ?? 'drawer' }}" style="--hr-w:{{ $hr_width }}px; --hr-brand:{{ $hr_point }}">
@@ -128,7 +122,6 @@ $hr_footer_info = array_values(array_filter(array_map('trim', explode("\n", (str
 		@include('_visual')
 	@endif
 
-	{{-- 서브 타이틀 밴드. slx/sfx 는 표시하지 않는다 --}}
 	@if (!$hr_show_visual && $hr_type !== 'main' && !$hr_no_subhead)
 	@php $hr_sub_title = trim((string)(\Context::getBrowserTitle() ?: ($hr_module_info->browser_title ?? ''))); @endphp
 	@if ($hr_sub_title !== '')

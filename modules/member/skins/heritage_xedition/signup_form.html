@@ -117,7 +117,6 @@ function zittmeIdentityVerify() {
 	var w = window.open('{$identity_verify_url}', 'zittme_identity', 'width=460,height=640,scrollbars=yes');
 	if (w) { w.focus(); }
 }
-/* STEP 1: 필수 약관 체크 확인 → 체크 상태 저장 → 본인인증 팝업 */
 function zmStep1Continue() {
 	var required = document.querySelectorAll('#zmAgreements input[type="checkbox"][required]');
 	for (var i = 0; i < required.length; i++) {
@@ -132,7 +131,6 @@ function zmStep1Continue() {
 	try { sessionStorage.setItem('zm_signup_agreements', JSON.stringify(checks)); } catch(e) {}
 	zittmeIdentityVerify();
 }
-/* strip the ticket from the URL once consumed (history/Referer hygiene) */
 (function(){ var u = new URL(window.location.href); if (u.searchParams.has("identity_ticket")) { u.searchParams.delete("identity_ticket"); history.replaceState(null, "", u.toString()); } })();
 window.addEventListener('message', function(e) {
 	if (e.origin !== window.location.origin) return;
@@ -142,7 +140,6 @@ window.addEventListener('message', function(e) {
 		window.location.href = u.toString();
 	}
 });
-/* STEP 3: 약관 체크 복원 + 인증 정보 채우고 잠금 */
 (function(){
 	var verified = <!--@if(!empty($identity_verified_info))-->true<!--@else-->false<!--@end-->;
 	if (!verified) return;

@@ -57,7 +57,6 @@
 			</div>
 		</header>
 
-		{{-- getContent(false) 로 코어가 붙이는 문서 기능 링크를 끈다 --}}
 		<div class="zmk-view-body">{!! $oDocument->getContent(false) !!}</div>
 
 		@if ($oDocument->hasUploadedFiles())
@@ -92,7 +91,6 @@
 			</span>
 		</div>
 
-		{{-- 질문에 단 댓글 --}}
 		<section class="zmk-qcmt">
 			<div class="zmk-qcmt-head">
 				<h3 class="zmk-section-title">{{ $lang->kin_question_comments }} <b>{{ count($oDocument->getComments() ?: []) }}</b></h3>
@@ -141,7 +139,6 @@
 		</section>
 	</article>
 
-	{{-- 답변 --}}
 	<section class="zmk-answers">
 		<div class="zmk-answers-head">
 			<h2 class="zmk-section-title">{{ $lang->kin_answers }} <b>{{ count($kin_answers) }}</b></h2>
@@ -240,7 +237,6 @@
 				@endif
 			</div>
 
-			{{-- 답변에 단 댓글. 접어 두었다가 펼친다 --}}
 			<div class="zmk-answer-cmts">
 				<button type="button" class="zmk-link-btn zmk-cmt-toggle" onclick="zmkToggleForm('zmk_cmts_{{ $answer->document_srl }}')">{{ $lang->kin_toggle_comments }} <b>{{ count($answer->getComments() ?: []) }}</b></button>
 
@@ -289,7 +285,6 @@
 </div>
 
 <script>
-// 의견 영역은 접어 두었다가 버튼으로 펼친다. 펼치면 바로 쓸 수 있게 포커스를 준다.
 function zmkToggleForm(id) {
 	var form = document.getElementById(id);
 	if (!form) return;
@@ -301,14 +296,12 @@ function zmkToggleForm(id) {
 	}
 }
 
-// 추천·비추천. exec_json 이라 실패(자기 글, 중복 추천 등)는 코어가 알림 팝업으로 보여 준다.
 function zmkVote(documentSrl, cmd) {
 	exec_json('kin.procKinVoteDocument', { mid: '{{ $mid }}', document_srl: documentSrl, cmd: cmd }, function () {
 		location.reload();
 	});
 }
 
-// 답변 채택. 실패(이미 채택 등)는 코어 알림 팝업으로 보여 준다.
 function zmkAccept(answerSrl) {
 	if (!confirm('{{ $kin_use_point ? $lang->kin_confirm_accept : $lang->kin_confirm_accept_plain }}')) return;
 
@@ -317,8 +310,6 @@ function zmkAccept(answerSrl) {
 	});
 }
 
-// 의견을 쓰고 돌아오면 주소의 앵커(#zmk_cmts_*)가 그 의견 영역을 가리킨다.
-// 접힌 채로 두면 방금 쓴 의견이 안 보이므로 펼쳐서 보여 준다.
 (function () {
 	var hash = String(location.hash || '');
 	if (hash.indexOf('#zmk_cmts_') !== 0) return;

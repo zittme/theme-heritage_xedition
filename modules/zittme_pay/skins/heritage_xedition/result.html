@@ -56,7 +56,6 @@
 		</dl>
 	</section>
 
-	{{-- Conekta 현금(OXXO)·계좌이체(SPEI)는 참조번호로 입금한 뒤 웹훅으로 확정된다 --}}
 	@if($order->status === 'pending' && $order->gateway === 'conekta')
 	<section class="zpay-bank-guide">
 		<h2 class="zpay-section-title">{{ $lang->zpay_bank_guide_title }}</h2>

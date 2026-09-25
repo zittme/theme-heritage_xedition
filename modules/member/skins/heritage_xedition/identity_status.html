@@ -40,7 +40,6 @@ function zittmeIdentityVerify() {
 	var w = window.open('{$identity_verify_url}', 'zittme_identity', 'width=460,height=640,scrollbars=yes');
 	if (w) { w.focus(); }
 }
-/* strip the ticket from the URL once consumed (history/Referer hygiene) */
 (function(){ var u = new URL(window.location.href); if (u.searchParams.has("identity_ticket")) { u.searchParams.delete("identity_ticket"); history.replaceState(null, "", u.toString()); } })();
 window.addEventListener('message', function(e) {
 	if (e.origin !== window.location.origin) return;

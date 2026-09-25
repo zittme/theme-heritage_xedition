@@ -1,4 +1,3 @@
-/* 사용자 추가 */
 function completeInsert(ret_obj, response_tags, args, fo_obj) {
     var error = ret_obj['error'];
     var message = ret_obj['message'];
@@ -15,7 +14,6 @@ function completeInsert(ret_obj, response_tags, args, fo_obj) {
     }
 }
 
-/* 정보 수정 */
 function completeModify(ret_obj, response_tags, args, fo_obj) {
     var error = ret_obj['error'];
     var message = ret_obj['message'];
@@ -25,7 +23,6 @@ function completeModify(ret_obj, response_tags, args, fo_obj) {
     location.href = current_url.setQuery('act','dispMemberInfo');
 }
 
-/* 회원 탈퇴 */
 function completeLeave(ret_obj, response_tags, args, fo_obj) {
     var error = ret_obj['error'];
     var message = ret_obj['message'];
@@ -35,13 +32,11 @@ function completeLeave(ret_obj, response_tags, args, fo_obj) {
     location.href = current_url.setQuery('act','');
 }
 
-/* 이미지 업로드 */
 function _doUploadImage(fo_obj, act) {
     fo_obj.act.value = act;
     fo_obj.submit();
 }
 
-/* 프로필 이미지/ 이미지 이름/마크 등록 */
 function doUploadProfileImage() {
     var fo_obj = get_by_id("fo_insert_member");
     if(!fo_obj.profile_image.value) return;
@@ -59,7 +54,6 @@ function doUploadImageMark() {
     _doUploadImage(fo_obj, 'procMemberInsertImageMark');
 }
 
-/* 로그인 후 */
 function completeLogin(ret_obj, response_tags, params, fo_obj) {
     if(fo_obj.remember_user_id && fo_obj.remember_user_id.checked) {
         var expire = new Date();
@@ -71,12 +65,10 @@ function completeLogin(ret_obj, response_tags, params, fo_obj) {
     location.href = current_url.setQuery('act','');
 }
 
-/* 로그아웃 후 */
 function completeLogout(ret_obj) {
     location.href = current_url.setQuery('act','');
 }
 
-/* 인증 메일 재발송 후 */
 function completeResendAuthMail(ret_obj, response_tags) {
 	var error = ret_obj['error'];
     var message =  ret_obj['message'];
@@ -85,7 +77,6 @@ function completeResendAuthMail(ret_obj, response_tags) {
 	if(error != 0) alert(error);
 }
 
-/* 프로필 이미지, 이미지 이름, 마크 삭제 */
 function doDeleteProfileImage(member_srl) {
 	if (!member_srl) return;
 
@@ -126,7 +117,6 @@ function doDeleteImageMark(member_srl) {
 	);
 }
 
-/* 스크랩 삭제 */
 function doDeleteScrap(document_srl) {
     var params = new Array();
     params['document_srl'] = document_srl;
@@ -136,12 +126,10 @@ function doDeleteScrap(document_srl) {
 	});
 }
 
-/* 비밀번호 찾기 후 */
 function completeFindMemberAccount(ret_obj, response_tags) {
     alert(ret_obj['message']);
 }
 
-/* 임시 비밀번호 생성 */
 function completeFindMemberAccountByQuestion(ret_obj, response_tags) {
     if(ret_obj['error'] != 0){
 		alert(ret_obj['message']);
@@ -150,7 +138,6 @@ function completeFindMemberAccountByQuestion(ret_obj, response_tags) {
 	}
 }
 
-/* 저장글 삭제 */
 function doDeleteSavedDocument(document_srl, confirm_message) {
     if(!confirm(confirm_message)) return false;
 
@@ -163,7 +150,6 @@ function insertSelectedModule(id, module_srl, mid, browser_title) {
     location.href = current_url.setQuery('selected_module_srl',module_srl);
 }
 
-/* 스크랩 폴더 이동 */
 jQuery(function($) {
 	$("#scrap_folder_create").on("click", function() {
 		var input = $(this).siblings("input.folder_name").first();

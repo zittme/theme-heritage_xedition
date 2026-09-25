@@ -115,6 +115,7 @@
 	@endif
 
 	<p class="shp-foot-links">
+		@if (!empty($seller_apply_link))<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceSellerApply') }}">{{ $lang->mk_apply_title }}</a>@endif
 		<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispCommerceList') }}">{{ $lang->shop_back_list }}</a>
 	</p>
 	<script>
