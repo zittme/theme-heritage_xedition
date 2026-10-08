@@ -349,3 +349,26 @@ a.zpay-btn-primary:visited {
 .zpay-summary .zpay-section-title { margin-bottom: 12px; }
 
 .zpay-sub-text { color: var(--zpay-muted); }
+
+/* 결제수단 로고 (짓미페이 0.2.12+). 어떤 바탕에서도 보이도록 늘 밝은 칩 위에 올린다. */
+.zpay-method-logo {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	height: 36px;
+	min-width: 64px;
+	padding: 4px 10px;
+	box-sizing: border-box;
+	background: #fff;
+	border: 1px solid rgba(15, 23, 42, .14);
+	border-radius: 6px;
+	flex: 0 0 auto;
+}
+
+.zpay-method-logo img {
+	display: block;
+	max-height: 26px;
+	max-width: 140px;
+	width: auto;
+	height: auto;
+}

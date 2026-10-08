@@ -41,7 +41,11 @@
 			<label class="zpay-method" for="zpay-method-{{ $gateway_name }}">
 				<input type="radio" name="zpay_gateway" id="zpay-method-{{ $gateway_name }}" value="{{ $gateway_name }}"
 					data-requires-client="{{ $gateway['requires_client'] ? 1 : 0 }}">
+				@if(!empty($gateway['logo']))
+				<span class="zpay-method-logo"><img src="{{ $gateway['logo'] }}" alt="{{ $gateway['title'] }}" /></span>
+				@else
 				<span class="zpay-method-label">{{ $gateway['title'] }}</span>
+				@endif
 			</label>
 			@endforeach
 		</div>
