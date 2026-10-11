@@ -8,7 +8,7 @@
 	--hr-brand-soft: rgba(205, 162, 90, .12);
 	--hr-ink: #10151f;
 	--hr-ink-sub: #525c6b;
-	--hr-muted: #8a94a4;
+	--hr-muted: #69707d;
 	--hr-line: #e6e9ef;
 	--hr-line-soft: #f0f2f6;
 	--hr-bg: #ffffff;
@@ -47,6 +47,28 @@
 	--hr-btn-line: #443e30;
 	--hr-shadow: 0 18px 40px -24px rgba(0, 0, 0, .6);
 }
+:root {
+	--hr-on-brand: #fff;
+	--hr-on-brand-dark: #fff;
+	--hr-on-strong: #fff;
+	--hr-on-strong-hover: #fff;
+	--hr-on-danger: #fff;
+	--hr-brand-text: var(--hr-brand);
+	--hr-tl-min: 0;
+	--hr-tl-max: .48;
+}
+[data-theme="dark"] { --hr-tl-min: .76; --hr-tl-max: 1; }
+@supports (color: color(from red srgb-linear r g b)) {
+	:root {
+		--hr-on-brand: color(from var(--hr-brand) srgb-linear clamp(.004, (.179 - (.2126 * r + .7152 * g + .0722 * b)) * 100000, 1) clamp(.004, (.179 - (.2126 * r + .7152 * g + .0722 * b)) * 100000, 1) clamp(.004, (.179 - (.2126 * r + .7152 * g + .0722 * b)) * 100000, 1));
+		--hr-on-brand-dark: color(from var(--hr-brand-dark) srgb-linear clamp(.004, (.179 - (.2126 * r + .7152 * g + .0722 * b)) * 100000, 1) clamp(.004, (.179 - (.2126 * r + .7152 * g + .0722 * b)) * 100000, 1) clamp(.004, (.179 - (.2126 * r + .7152 * g + .0722 * b)) * 100000, 1));
+		--hr-on-strong: color(from var(--hr-btn-strong) srgb-linear clamp(.004, (.179 - (.2126 * r + .7152 * g + .0722 * b)) * 100000, 1) clamp(.004, (.179 - (.2126 * r + .7152 * g + .0722 * b)) * 100000, 1) clamp(.004, (.179 - (.2126 * r + .7152 * g + .0722 * b)) * 100000, 1));
+		--hr-on-strong-hover: color(from var(--hr-btn-strong-hover) srgb-linear clamp(.004, (.179 - (.2126 * r + .7152 * g + .0722 * b)) * 100000, 1) clamp(.004, (.179 - (.2126 * r + .7152 * g + .0722 * b)) * 100000, 1) clamp(.004, (.179 - (.2126 * r + .7152 * g + .0722 * b)) * 100000, 1));
+		--hr-on-danger: color(from var(--hr-danger) srgb-linear clamp(.004, (.179 - (.2126 * r + .7152 * g + .0722 * b)) * 100000, 1) clamp(.004, (.179 - (.2126 * r + .7152 * g + .0722 * b)) * 100000, 1) clamp(.004, (.179 - (.2126 * r + .7152 * g + .0722 * b)) * 100000, 1));
+		--hr-brand-text: oklch(from var(--hr-brand) clamp(var(--hr-tl-min), l, var(--hr-tl-max)) c h);
+	}
+}
+
 
 .hr {
 	font-family: var(--hr-font);
@@ -108,12 +130,12 @@ html, .hr *, .hr-mobile * {
 .hr a.hr-btn-primary {
 	background: var(--hr-btn-strong);
 	border-color: var(--hr-btn-strong);
-	color: #fff;
+	color: var(--hr-on-strong, #fff);
 }
 .hr-btn-primary:hover {
 	background: var(--hr-btn-strong-hover);
 	border-color: var(--hr-btn-strong-hover);
-	color: #fff;
+	color: var(--hr-on-strong-hover, #fff);
 }
 .hr-btn-sm { padding: 6px 12px; font-size: 12.5px; }
 .hr-btn-lg { padding: 12px 24px; font-size: 15px; }
@@ -131,14 +153,14 @@ html, .hr *, .hr-mobile * {
 	font-size: 13px;
 	font-weight: 600;
 }
-.hr-chip:hover { border-color: var(--hr-brand); color: var(--hr-brand); }
-.hr-chip.is-on { background: var(--hr-brand); border-color: var(--hr-brand); color: #fff; }
+.hr-chip:hover { border-color: var(--hr-brand); color: var(--hr-brand-text, var(--hr-brand)); }
+.hr-chip.is-on { background: var(--hr-brand); border-color: var(--hr-brand); color: var(--hr-on-brand, #fff); }
 .hr-badge {
 	display: inline-block;
 	padding: 3px 9px;
 	border-radius: 0;
 	background: var(--hr-brand-soft);
-	color: var(--hr-brand);
+	color: var(--hr-brand-text, var(--hr-brand));
 	font-size: 11.5px;
 	font-weight: 800;
 }
@@ -195,7 +217,7 @@ html, .hr *, .hr-mobile * {
 .hr-table tbody tr:hover { background: var(--hr-surface); }
 
 .hr-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin: 0 0 24px; }
-.hr-eyebrow { display: block; font-size: 11.5px; font-weight: 800; letter-spacing: .14em; color: var(--hr-brand); text-transform: uppercase; }
+.hr-eyebrow { display: block; font-size: 11.5px; font-weight: 800; letter-spacing: .14em; color: var(--hr-brand-text, var(--hr-brand)); text-transform: uppercase; }
 .hr-title { margin: 6px 0 0; font-size: clamp(24px, 3.2vw, 32px); }
 .hr-desc { margin: 8px 0 0; color: var(--hr-ink-sub); font-size: 15px; }
 
@@ -212,8 +234,8 @@ html, .hr *, .hr-mobile * {
 	font-weight: 500;
 	color: var(--hr-ink-sub);
 }
-.hr-pages a:hover { background: var(--hr-surface); color: var(--hr-brand); }
-.hr-pages strong { color: var(--hr-brand); font-weight: 800; }
+.hr-pages a:hover { background: var(--hr-surface); color: var(--hr-brand-text, var(--hr-brand)); }
+.hr-pages strong { color: var(--hr-brand-text, var(--hr-brand)); font-weight: 800; }
 
 .hr-empty { padding: 70px 20px; text-align: center; color: var(--hr-muted); }
 

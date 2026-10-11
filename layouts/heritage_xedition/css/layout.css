@@ -68,7 +68,7 @@ html, body { margin: 0; background: var(--hr-bg); }
 	transition: color .14s;
 }
 .hr-iconbtn svg { width: 20px; height: 20px; fill: currentColor; }
-.hr-iconbtn:hover { color: var(--hr-brand); }
+.hr-iconbtn:hover { color: var(--hr-brand-text, var(--hr-brand)); }
 
 .hr-me {
 	position: relative;
@@ -78,7 +78,7 @@ html, body { margin: 0; background: var(--hr-bg); }
 	margin-left: 6px;
 	padding: 0 6px 0 0;
 	background: var(--hr-brand);
-	color: #fff;
+	color: var(--hr-on-brand, #fff);
 }
 .hr-me:has(> .hr-me-btn:only-child) { padding-right: 0; }
 .hr-me-btn {
@@ -87,15 +87,15 @@ html, body { margin: 0; background: var(--hr-bg); }
 	gap: 8px;
 	height: 40px;
 	padding: 0 10px;
-	color: #fff;
+	color: var(--hr-on-brand, #fff);
 }
-.hr-me-btn:hover { background: rgba(0, 0, 0, .12); color: #fff; }
+.hr-me-btn:hover { background: rgba(0, 0, 0, .12); color: var(--hr-on-brand, #fff); }
 .hr-me-photo, .hr-me-btn img { width: 26px; height: 26px; object-fit: cover; border-radius: 50%; box-shadow: 0 0 0 2px rgba(255, 255, 255, .35); }
 .hr-me-photo-fallback { width: 19px; height: 19px; fill: currentColor; }
 .hr-me-nick { max-width: 9em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; font-weight: 700; }
 .hr-me .hr-nc { display: flex; align-items: center; }
-.hr-me .hr-nc-btn { color: #fff; border-radius: 0; }
-.hr-me .hr-nc-btn:hover { background: rgba(0, 0, 0, .12); color: #fff; }
+.hr-me .hr-nc-btn { color: var(--hr-on-brand, #fff); border-radius: 0; }
+.hr-me .hr-nc-btn:hover { background: rgba(0, 0, 0, .12); color: var(--hr-on-brand, #fff); }
 .hr-me .hr-nc-badge { box-shadow: 0 0 0 2px var(--hr-brand); }
 .hr-me-menu {
 	position: absolute;
@@ -150,8 +150,8 @@ html, body { margin: 0; background: var(--hr-bg); }
 
 .hr-utils { display: flex; align-items: center; gap: 12px; }
 .hr-utils a.hr-util-link { font-size: 13px; font-weight: 600; color: var(--hr-ink-sub); white-space: nowrap; }
-.hr-util-link:hover { color: var(--hr-brand); }
-.hr-utils a.hr-util-admin { color: var(--hr-brand); }
+.hr-util-link:hover { color: var(--hr-brand-text, var(--hr-brand)); }
+.hr-utils a.hr-util-admin { color: var(--hr-brand-text, var(--hr-brand)); }
 .hr-utils a.hr-util-admin:hover { color: var(--hr-brand-dark); }
 
 .hr-search { position: relative; }
@@ -180,7 +180,7 @@ html, body { margin: 0; background: var(--hr-bg); }
 	cursor: pointer;
 }
 .hr-search button svg { width: 17px; height: 17px; fill: currentColor; }
-.hr-search button:hover { color: var(--hr-brand); }
+.hr-search button:hover { color: var(--hr-brand-text, var(--hr-brand)); }
 
 .hr-lang { position: relative; }
 .hr-lang-btn {
@@ -199,7 +199,7 @@ html, body { margin: 0; background: var(--hr-bg); }
 	letter-spacing: .04em;
 	cursor: pointer;
 }
-.hr-lang-btn:hover { color: var(--hr-brand); }
+.hr-lang-btn:hover { color: var(--hr-brand-text, var(--hr-brand)); }
 .hr-lang-list a b { margin-right: 7px; font-size: 12px; letter-spacing: .04em; }
 .hr-lang-list {
 	position: absolute;
@@ -224,7 +224,7 @@ html, body { margin: 0; background: var(--hr-bg); }
 	white-space: nowrap;
 }
 .hr-lang-list a:hover { background: var(--hr-bg-soft); color: var(--hr-ink); }
-.hr-lang-list a.is-on { color: var(--hr-brand); font-weight: 700; }
+.hr-lang-list a.is-on { color: var(--hr-brand-text, var(--hr-brand)); font-weight: 700; }
 
 .hr-theme {
 	width: 32px;
@@ -239,7 +239,7 @@ html, body { margin: 0; background: var(--hr-bg); }
 	cursor: pointer;
 }
 .hr-theme svg { width: 16px; height: 16px; fill: currentColor; }
-.hr-theme:hover { border-color: var(--hr-brand); color: var(--hr-brand); }
+.hr-theme:hover { border-color: var(--hr-brand); color: var(--hr-brand-text, var(--hr-brand)); }
 .hr-ico-moon { display: none; }
 [data-theme="dark"] .hr-ico-sun { display: none; }
 [data-theme="dark"] .hr-ico-moon { display: inline; }
@@ -280,7 +280,7 @@ html, body { margin: 0; background: var(--hr-bg); }
 .hr-gnb-list > li:hover > .hr-gnb-top,
 .hr-gnb-list > li:focus-within > .hr-gnb-top { color: var(--hr-ink); }
 .hr-gnb-list > li.is-on > .hr-gnb-top { color: var(--hr-ink); }
-.hr-gnb-list > li.is-on > .hr-gnb-top::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--hr-brand); }
+.hr-gnb-list > li.is-on > .hr-gnb-top::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--hr-brand); color: var(--hr-on-brand, #fff); }
 
 .hr-gnb-sub {
 	position: absolute;
@@ -340,7 +340,7 @@ html, body { margin: 0; background: var(--hr-bg); }
 body.hr-mobile-on { overflow: hidden; }
 .hr-mobile-account { display: flex; gap: 8px; padding: 12px 16px; }
 .hr-mobile-account-btn { flex: 1; padding: 10px 8px; border: 1px solid rgba(255, 255, 255, .45); border-radius: 0; text-align: center; font-size: 13.5px; font-weight: 700; color: var(--hr-nav-fg-on); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.hr-mobile-account-btn.is-primary { background: #fff; border-color: #fff; color: var(--hr-brand); }
+.hr-mobile-account-btn.is-primary { background: #fff; border-color: #fff; color: var(--hr-brand-text, var(--hr-brand)); }
 .hr-mobile-list > li { position: relative; border-top: 1px solid rgba(255, 255, 255, .18); }
 .hr-mobile-list > li > a { display: block; padding: 15px clamp(16px, 4vw, 32px); font-size: 15.5px; font-weight: 700; color: var(--hr-nav-fg-on); }
 .hr-mobile-toggle { position: absolute; top: 5px; right: 8px; width: 42px; height: 42px; border: 0; background: none; color: rgba(255, 255, 255, .6); cursor: pointer; }
@@ -431,7 +431,7 @@ body.hr-mobile-on { overflow: hidden; }
 }
 .hr-visual:hover .hr-visual-nav,
 .hr-visual-nav:focus-visible { opacity: 1; }
-.hr-visual-nav:hover { background: var(--hr-brand); border-color: var(--hr-brand); }
+.hr-visual-nav:hover { background: var(--hr-brand); border-color: var(--hr-brand); color: var(--hr-on-brand, #fff); }
 .hr-visual-nav svg { width: 22px; height: 22px; fill: currentColor; }
 .hr-visual-nav.prev { left: clamp(16px, 2.5vw, 36px); }
 .hr-visual-nav.next { right: clamp(16px, 2.5vw, 36px); }
@@ -448,7 +448,7 @@ body.hr-mobile-on { overflow: hidden; }
 	transition: height .2s ease, background .2s ease;
 }
 .hr-visual-dots button:hover { background: rgba(255, 255, 255, .8); }
-.hr-visual-dots button.is-on { height: 22px; background: var(--hr-brand); }
+.hr-visual-dots button.is-on { height: 22px; background: var(--hr-brand); color: var(--hr-on-brand, #fff); }
 
 .hr-body { flex: 1 0 auto; padding: clamp(28px, 4vw, 44px) 0 clamp(48px, 6vw, 72px); }
 .hr-body.has-lnb .hr-body-inner { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 40px; }
@@ -485,7 +485,7 @@ body.hr-mobile-on { overflow: hidden; }
 .hr-lnb-list > li > a:hover { background: none; color: var(--hr-ink); padding-left: 6px; }
 .hr-lnb-list > li.is-on > a {
 	background: none;
-	color: var(--hr-brand);
+	color: var(--hr-brand-text, var(--hr-brand));
 	padding-left: 10px;
 	box-shadow: inset 3px 0 0 var(--hr-brand);
 }
@@ -494,13 +494,13 @@ body.hr-mobile-on { overflow: hidden; }
 .hr-lnb-sub { margin: 0 0 8px; padding: 2px 0 4px 14px; border-top: 0; background: none; }
 .hr-lnb-sub a { display: flex; align-items: center; gap: 7px; padding: 6px 0; font-size: 13.5px; color: var(--hr-muted); transition: color .14s; }
 .hr-lnb-sub-ico { flex: none; width: 13px; height: 13px; fill: currentColor; opacity: .45; }
-.hr-lnb-sub li.is-on a, .hr-lnb-sub a:hover { color: var(--hr-brand); }
+.hr-lnb-sub li.is-on a, .hr-lnb-sub a:hover { color: var(--hr-brand-text, var(--hr-brand)); }
 .hr-lnb-sub li.is-on .hr-lnb-sub-ico, .hr-lnb-sub a:hover .hr-lnb-sub-ico { opacity: .8; }
 
 .hr-side-login { margin-top: 20px; padding: 16px; border: 1px solid var(--hr-line); border-radius: var(--hr-radius-sm); background: var(--hr-surface); }
 .hr-side-me { margin: 0 0 10px; font-size: 13.5px; color: var(--hr-ink-sub); line-height: 1.55; }
 .hr-side-links { display: flex; gap: 12px; margin-top: 10px; font-size: 12.5px; color: var(--hr-muted); }
-.hr-side-links a:hover { color: var(--hr-brand); }
+.hr-side-links a:hover { color: var(--hr-brand-text, var(--hr-brand)); }
 
 .hr-content { min-width: 0; padding-bottom: 10px; }
 
@@ -516,7 +516,7 @@ body.hr-mobile-on { overflow: hidden; }
 .hr-footer-menu-title { display: block; margin-bottom: 11px; font-size: 11.5px; font-weight: 800; letter-spacing: .1em; color: var(--hr-muted); text-transform: uppercase; }
 .hr-footer-menu ul { display: grid; grid-template-rows: repeat(4, auto); grid-auto-flow: column; gap: 9px 40px; margin: 0; padding: 0; list-style: none; }
 .hr-footer-menu a { font-size: 13.5px; font-weight: 600; color: var(--hr-ink-sub); }
-.hr-footer-menu a:hover { color: var(--hr-brand); }
+.hr-footer-menu a:hover { color: var(--hr-brand-text, var(--hr-brand)); }
 .hr-footer-info { display: flex; flex-wrap: wrap; gap: 5px 16px; margin: 28px 0 0; padding-top: 18px; border-top: 1px solid var(--hr-line-soft); font-size: 12.5px; }
 .hr-footer-bottom { display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; margin: 0; padding-top: 15px; padding-bottom: 15px; border-top: 0; font-size: 12.5px; }
 .hr-footer-bottom a:hover { text-decoration: underline; }
@@ -613,7 +613,7 @@ body.hr-mobile-on { overflow: hidden; }
 	font-weight: 700;
 	letter-spacing: -.01em;
 	background: var(--hr-brand);
-	color: #fff;
+	color: var(--hr-on-brand, #fff);
 	border: 0;
 	box-shadow: 0 8px 24px color-mix(in srgb, var(--hr-brand) 38%, transparent), inset 0 1px 0 rgba(255, 255, 255, .25);
 	transition: transform .16s ease, box-shadow .16s ease;
@@ -629,14 +629,14 @@ body.hr-mobile-on { overflow: hidden; }
 .hr-nc { position: relative; display: flex; align-items: center; }
 .hr-nc-btn { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border: 0; border-radius: 50%; background: transparent; color: var(--hr-ink-sub); cursor: pointer; transition: background .13s, color .13s; }
 .hr-nc-btn svg { width: 19px; height: 19px; fill: currentColor; }
-.hr-nc-btn:hover { background: var(--hr-brand-soft); color: var(--hr-brand); }
+.hr-nc-btn:hover { background: var(--hr-brand-soft); color: var(--hr-brand-text, var(--hr-brand)); }
 .hr-nc-badge { position: absolute; top: 0; right: -1px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 999px; background: #e5484d; color: #fff; font-size: 10px; font-weight: 800; font-style: normal; line-height: 16px; text-align: center; box-shadow: 0 0 0 2px var(--hr-bg, #fff); }
 .hr-nc-panel { color: var(--hr-ink); }
-.hr-nc-panel .hr-nc-all { color: var(--hr-brand); }
+.hr-nc-panel .hr-nc-all { color: var(--hr-brand-text, var(--hr-brand)); }
 .hr-nc-panel { position: absolute; top: calc(100% + 10px); right: -6px; width: 330px; border-radius: 0; background: var(--hr-surface, #fff); border: 1px solid var(--hr-line); box-shadow: 0 24px 60px -18px rgba(17, 22, 30, .25); overflow: hidden; z-index: 1200; }
 .hr-nc-head { display: flex; align-items: center; justify-content: space-between; padding: 13px 16px 9px; }
 .hr-nc-head strong { font-size: 14.5px; font-weight: 800; }
-.hr-nc-readall { border: 0; background: transparent; color: var(--hr-brand); font-size: 12.5px; font-weight: 700; cursor: pointer; padding: 4px 6px; border-radius: 0; }
+.hr-nc-readall { border: 0; background: transparent; color: var(--hr-brand-text, var(--hr-brand)); font-size: 12.5px; font-weight: 700; cursor: pointer; padding: 4px 6px; border-radius: 0; }
 .hr-nc-readall:hover { background: var(--hr-brand-soft); }
 .hr-nc-list { list-style: none; margin: 0; padding: 0 8px; max-height: 340px; overflow-y: auto; }
 .hr-nc-list li { margin: 2px 0; }
@@ -645,7 +645,7 @@ body.hr-mobile-on { overflow: hidden; }
 .hr-nc-text { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 13.5px; line-height: 1.5; color: var(--hr-ink); }
 .hr-nc-ago { display: block; margin-top: 3px; font-size: 11.5px; color: var(--hr-muted); }
 .hr-nc-empty { padding: 26px 0 30px; text-align: center; color: var(--hr-muted); font-size: 13.5px; }
-.hr-nc-all { display: block; padding: 12px; text-align: center; font-size: 13px; font-weight: 700; color: var(--hr-brand); text-decoration: none; border-top: 1px solid var(--hr-line); }
+.hr-nc-all { display: block; padding: 12px; text-align: center; font-size: 13px; font-weight: 700; color: var(--hr-brand-text, var(--hr-brand)); text-decoration: none; border-top: 1px solid var(--hr-line); }
 .hr-nc-all:hover { background: var(--hr-brand-soft); }
 
 @media (max-width: 900px) {

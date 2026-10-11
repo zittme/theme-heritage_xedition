@@ -40,7 +40,7 @@
 	letter-spacing: -0.02em;
 }
 
-.zpay-title-ok { color: var(--zpay-point); }
+.zpay-title-ok { color: var(--hr-brand-text, var(--zpay-point)); }
 .zpay-title-wait { color: #b45309; }
 .zpay-title-fail { color: #b91c1c; }
 
@@ -109,7 +109,7 @@
 .zpay-summary-total dd strong {
 	font-size: 20px;
 	font-weight: 700;
-	color: var(--zpay-point);
+	color: var(--hr-brand-text, var(--zpay-point));
 }
 
 
@@ -252,7 +252,7 @@ a.zpay-btn-primary:link,
 a.zpay-btn-primary:visited,
 a.zpay-btn-primary:hover {
 	background: var(--zpay-point);
-	color: #fff !important;
+	color: var(--hr-on-brand, #fff) !important;
 }
 
 .zpay-btn-primary:hover {
@@ -289,7 +289,7 @@ a.zpay-btn-primary:hover {
 }
 
 .zpay-receipt a {
-	color: var(--zpay-point);
+	color: var(--hr-brand-text, var(--zpay-point));
 }
 
 .zpay-bank-guide {

@@ -14,8 +14,8 @@
 
 .ctc-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 22px; padding: 0; list-style: none; }
 .ctc-tabs li a { display: inline-block; padding: 9px 16px; border: 1px solid var(--ctc-border); border-radius: var(--hr-radius-btn, 4px); background: var(--ctc-card); color: var(--ctc-sub); font-size: 14px; font-weight: 600; }
-.ctc-tabs li a:hover { border-color: var(--ctc-brand); color: var(--ctc-brand); }
-.ctc-tabs li.is-active a { border-color: var(--ctc-brand); background: var(--ctc-brand); color: #fff; }
+.ctc-tabs li a:hover { border-color: var(--ctc-brand); color: var(--hr-brand-text, var(--ctc-brand)); }
+.ctc-tabs li.is-active a { border-color: var(--ctc-brand); background: var(--ctc-brand); color: var(--hr-on-brand, #fff); }
 
 .ctc-form { margin: 0; }
 .ctc-row { padding: 16px 0; border-top: 1px solid var(--ctc-border); }
@@ -42,21 +42,21 @@
 
 .ctc-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--ctc-border); }
 .ctc-submit { display: inline-flex; align-items: center; justify-content: center; padding: 13px 32px; border: 1px solid transparent; border-radius: var(--hr-radius-btn, 4px);
-	background: var(--ctc-brand); color: #fff; font-size: 15px; font-weight: 700; font-family: inherit; cursor: pointer; transition: filter .15s; }
+	background: var(--ctc-brand); color: var(--hr-on-brand, #fff); font-size: 15px; font-weight: 700; font-family: inherit; cursor: pointer; transition: filter .15s; }
 .ctc-submit:hover { filter: brightness(1.06); color: #fff; }
 .ctc-link { padding: 0; border: 0; background: none; color: var(--ctc-sub); font-size: 14px; font-family: inherit; cursor: pointer; }
-.ctc-link:hover { color: var(--ctc-brand); }
+.ctc-link:hover { color: var(--hr-brand-text, var(--ctc-brand)); }
 .ctc-inline-form { display: inline; margin: 0; }
 
 .ctc-table { width: 100%; margin: 0; border-top: 2px solid var(--ctc-text); border-collapse: collapse; font-size: 14px; }
 .ctc-table th, .ctc-table td { padding: 14px 12px; border-bottom: 1px solid var(--ctc-border); text-align: left; vertical-align: top; }
 .ctc-table thead th { font-weight: 700; color: var(--ctc-sub); }
-.ctc-table tbody a:hover { color: var(--ctc-brand); }
+.ctc-table tbody a:hover { color: var(--hr-brand-text, var(--ctc-brand)); }
 .ctc-table-view th { width: 150px; background: var(--ctc-bg); font-weight: 700; }
 .ctc-nowrap { white-space: nowrap; }
 
 .ctc-status { display: inline-block; padding: 3px 10px; border-radius: 0; background: var(--ctc-bg); color: var(--ctc-sub); font-size: 12px; font-weight: 600; }
-.ctc-status-new { background: var(--ctc-brand-soft); color: var(--ctc-brand); }
+.ctc-status-new { background: var(--ctc-brand-soft); color: var(--hr-brand-text, var(--ctc-brand)); }
 .ctc-status-ing { background: #fdf3e2; color: #b97a17; }
 .ctc-status-done { background: #e7f6ec; color: #1e7a44; }
 .ctc-status-hold { background: var(--ctc-bg); color: var(--ctc-sub); }
@@ -70,7 +70,7 @@
 
 .ctc-foot-links { display: flex; gap: 18px; justify-content: center; margin-top: 28px; font-size: 14px; }
 .ctc-foot-links a { color: var(--ctc-sub); }
-.ctc-foot-links a:hover { color: var(--ctc-brand); }
+.ctc-foot-links a:hover { color: var(--hr-brand-text, var(--ctc-brand)); }
 
 @media (min-width: 641px) {
 	.ctc-row { display: flex; gap: 16px; }
@@ -95,4 +95,4 @@
 .ctc a.ctc-link,
 .ctc a.ctc-link:link,
 .ctc a.ctc-link:visited { text-decoration: none; border-bottom: 0; }
-.ctc a.ctc-link:hover { color: var(--ctc-brand); }
+.ctc a.ctc-link:hover { color: var(--hr-brand-text, var(--ctc-brand)); }
