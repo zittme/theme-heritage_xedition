@@ -47,6 +47,7 @@
 				@endif
 			</p>
 			@if (function_exists('shop_timesale_badge')){!! shop_timesale_badge($item, 'detail') !!}@endif
+			@if (function_exists('shop_stock_notice')){!! shop_stock_notice($item, $options ?? []) !!}@endif
 
 			@php
 			$shp_ship_type = $item->ship_fee_type ?? 'default';

@@ -14,7 +14,7 @@
 				<a href="{{ getUrl('', 'mid', $mid, 'act', 'dispReservationResult', 'code', $b->booking_code) }}">
 					<span class="rsv-my-code">{{ $b->booking_code }}</span>
 					<span class="rsv-my-status rsv-st-{{ $b->status }}">{{ $lang->{'reservation_status_' . $b->status} ?? $b->status }}</span>
-					<span class="rsv-my-date">{{ zdate($b->regdate, 'Y.m.d') }}</span>
+					<span class="rsv-my-date">{{ (method_exists('\Zittme\Modules\Reservation\Controllers\Base', 'siteDate') ? \Zittme\Modules\Reservation\Controllers\Base::siteDate((string)$b->regdate, 'Y.m.d') : zdate($b->regdate, 'Y.m.d')) }}</span>
 				</a>
 			</li>
 			@endforeach
